@@ -1,17 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package util;
 
 import java.util.Objects;
 
 /**
- * Ein ungeordnetes Paar von Schlüsseln für ein Map-Objekt.
- * @author christoph
- * @param <T> Typ der Schlüssel
+ * An unordered pair of keys for a Map.
+ * @author Christoph Burschka &lt;christoph@burschka.de&gt;
+ * @param <T> Type of both keys.
  */
 public class UnorderedPair<T> {
     private final T a, b;
