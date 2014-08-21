@@ -68,16 +68,17 @@ public class PhysLayoutPane extends Pane {
     public Vector combinedForce(Node a) {
         Vector result = new Vector(0, 0);
         Vector position = new Vector(a.getLayoutX(), a.getLayoutY());
-        for (Entry<Node, Spring> e : connectionsTo.get(a).entrySet()) {
+        connectionsTo.get(a).entrySet().stream().map((e) -> {
             Node b = e.getKey();
             Spring s = e.getValue();
-            Vector bPos = new Vector(b.getLayoutX(), b.getLayoutY());
-            Vector relative = bPos.difference(position);
+            Vector relative = new Vector(b.getLayoutX(), b.getLayoutY()).difference(position);
             double force = s.getForce(relative.norm());
             relative.unit();
             relative.scale(force);
+            return relative;
+        }).forEach((relative) -> {
             result.add(relative);
-        }
+        });
         return result;
     }
 }
