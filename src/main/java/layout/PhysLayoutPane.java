@@ -2,11 +2,13 @@ package layout;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import physics.Spring;
+import physics.SpringSimulation;
 import physics.Vector;
 import util.UnorderedPair;
 
@@ -16,17 +18,34 @@ import util.UnorderedPair;
  * @author Christoph Burschka &lt;christoph@burschka.de&gt;
  */
 public class PhysLayoutPane extends Pane {
-
-    private Map<UnorderedPair<Node>, Spring> connections;
-    private Map<Node, Map<Node, Spring>> connectionsTo;
+    //private double timeStep = 1E-3;
+    private final Map<UnorderedPair<Node>, Spring> connections;
+    private final Map<Node, Map<Node, Spring>> connectionsTo;
+    private final Map<Node, Double> mass;
 
     public PhysLayoutPane() {
         connections = new HashMap<>();
         connectionsTo = new HashMap<>();
+        mass = new HashMap<>();
+        //ObservableList<Node> children = getChildren();
     }
 
     public Spring getConnection(Node a, Node b) {
         return connections.get(new UnorderedPair(a, b));
+    }
+    
+    /**
+     * Set the mass of a node.
+     * If set to infinity, the node will be fixed in place.
+     * @param a
+     * @param m 
+     */
+    public void setMass(Node a, double m) {
+        mass.put(a, m);
+    }
+    
+    public double getMass(Node a) {
+        return mass.getOrDefault(a, 1.0);
     }
 
     public void addConnection(Node a, Node b, Spring s) {
@@ -79,6 +98,12 @@ public class PhysLayoutPane extends Pane {
         }).forEach((relative) -> {
             result.add(relative);
         });
+        return result;
+    }
+    
+    public Vector velocity(Node a) {
+        Vector result = combinedForce(a);
+        result.scale(1.0 / getMass(a));
         return result;
     }
 }
