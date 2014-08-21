@@ -24,6 +24,8 @@ public class UnorderedPair<T> {
 
     @Override
     public int hashCode() {
+        // Use arithmetic product to combine hashes.
+        // TODO: Might not be optimal.
         return Objects.hashCode(this.a) * Objects.hashCode(this.b);
     }
 }
