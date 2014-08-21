@@ -2,19 +2,23 @@ package layout;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import physics.Spring;
+import physics.Vector;
 import util.UnorderedPair;
 
 /**
  * A layout pane that positions elements according to elastic connections.
+ *
  * @author Christoph Burschka &lt;christoph@burschka.de&gt;
  */
 public class PhysLayoutPane extends Pane {
+
     private Map<UnorderedPair<Node>, Spring> connections;
-    private Map<Node, Map<Node,Spring>> connectionsTo;
+    private Map<Node, Map<Node, Spring>> connectionsTo;
 
     public PhysLayoutPane() {
         connections = new HashMap<>();
@@ -45,13 +49,35 @@ public class PhysLayoutPane extends Pane {
         this.connections.remove(new UnorderedPair(a, b));
         Map m = this.connectionsTo.get(a);
         Map n = this.connectionsTo.get(b);
-        if (m != null) m.remove(b);
-        if (n != null) n.remove(a);
+        if (m != null) {
+            m.remove(b);
+        }
+        if (n != null) {
+            n.remove(a);
+        }
     }
 
     public Set<Node> getNeighbors(Node a) {
         Map<Node, Spring> m = this.connectionsTo.get(a);
-        if (m == null) return null;
+        if (m == null) {
+            return null;
+        }
         return m.keySet();
+    }
+
+    public Vector combinedForce(Node a) {
+        Vector result = new Vector(0, 0);
+        Vector position = new Vector(a.getLayoutX(), a.getLayoutY());
+        for (Entry<Node, Spring> e : connectionsTo.get(a).entrySet()) {
+            Node b = e.getKey();
+            Spring s = e.getValue();
+            Vector bPos = new Vector(b.getLayoutX(), b.getLayoutY());
+            Vector relative = bPos.difference(position);
+            double force = s.getForce(relative.norm());
+            relative.unit();
+            relative.scale(force);
+            result.add(relative);
+        }
+        return result;
     }
 }

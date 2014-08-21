@@ -23,9 +23,9 @@ public class Spring {
     /**
      * Calculate the spring's currently exerted force.
      * @param distance The current (positive) length l of the spring.
-     * @return The force (positive force is directed outward).
+     * @return The force (positive force is directed inward).
      */
     public double getForce(double distance) {
-        return (length - distance)*strength;
+        return (distance - length)*strength;
     }
 }
