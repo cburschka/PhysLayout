@@ -16,20 +16,25 @@ public class PhysLayoutPane extends Pane {
     private Map<UnorderedPair<Node>, Spring> connections;
     private Map<Node, Map<Node,Spring>> connectionsTo;
 
+    public PhysLayoutPane() {
+        connections = new HashMap<>();
+        connectionsTo = new HashMap<>();
+    }
+
     public Spring getConnection(Node a, Node b) {
         return connections.get(new UnorderedPair(a, b));
     }
 
     public void addConnection(Node a, Node b, Spring s) {
         this.connections.put(new UnorderedPair(a, b), s);
-        Map<Node, Spring> m = this.connectionsTo.get(a);
-        Map<Node, Spring> n = this.connectionsTo.get(b);
+        Map m = this.connectionsTo.get(a);
+        Map n = this.connectionsTo.get(b);
         if (m == null) {
-            m = new HashMap<Node, Spring>();
+            m = new HashMap<>();
             this.connectionsTo.put(a, m);
         }
         if (n == null) {
-            n = new HashMap<Node, Spring>();
+            n = new HashMap<>();
             this.connectionsTo.put(b, n);
         }
         this.connectionsTo.get(a).put(b, s);
@@ -38,8 +43,8 @@ public class PhysLayoutPane extends Pane {
 
     public void removeConnection(Node a, Node b) {
         this.connections.remove(new UnorderedPair(a, b));
-        Map<Node, Spring> m = this.connectionsTo.get(a);
-        Map<Node, Spring> n = this.connectionsTo.get(b);
+        Map m = this.connectionsTo.get(a);
+        Map n = this.connectionsTo.get(b);
         if (m != null) m.remove(b);
         if (n != null) n.remove(a);
     }
