@@ -53,6 +53,27 @@ public class Main extends Application {
         Spring segment = new Spring(Math.PI * radius * 2 / NODE_COUNT, 10);
 
         for (int i = 0; i < NODE_COUNT; i++) {
+
+            Line line = new Line();
+            line.setFill(Color.BLACK);
+            line.setStroke(Color.BLACK);
+            line.startXProperty().bind(nodes[i].layoutXProperty());
+            line.startYProperty().bind(nodes[i].layoutYProperty());
+            line.endXProperty().bind(nodes[(i + 1) % NODE_COUNT].layoutXProperty());
+            line.endYProperty().bind(nodes[(i + 1) % NODE_COUNT].layoutYProperty());
+            root.getChildren().add(line);
+            line.toBack();
+
+            line = new Line();
+            line.setFill(Color.BLACK);
+            line.setStroke(Color.BLACK);
+            line.startXProperty().bind(nodes[i].layoutXProperty());
+            line.startYProperty().bind(nodes[i].layoutYProperty());
+            line.endXProperty().bind(anchor.layoutXProperty());
+            line.endYProperty().bind(anchor.layoutYProperty());
+            root.getChildren().add(line);
+            line.toBack();
+
             layout.addConnection(nodes[i], nodes[(i + 1) % NODE_COUNT], segment);
             layout.addConnection(nodes[i], nodes[(NODE_COUNT + i - 1) % NODE_COUNT], segment);
             layout.addConnection(nodes[i], anchor, radial);
