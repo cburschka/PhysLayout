@@ -18,7 +18,8 @@ import physics.SpringSimulation;
  * @author Christoph Burschka &lt;christoph@burschka.de&gt;
  */
 public class Main extends Application {
-    private static final int NODE_COUNT = 10;
+
+    private static final int NODE_COUNT = 25;
     private static final int NODE_SIZE = 10;
     private static final int WIDTH = 1024;
     private static final int HEIGHT = 768;
@@ -49,8 +50,8 @@ public class Main extends Application {
         }
         MouseControlUtil.makeDraggable(anchor);
         double radius = Math.min(WIDTH, HEIGHT) / 3;
-        Spring radial = new Spring(radius, 10);
-        Spring segment = new Spring(Math.PI * radius * 2 / NODE_COUNT, 10);
+        Spring radial = new Spring(radius, 20);
+        Spring segment = new Spring(Math.PI * radius * 2 / NODE_COUNT, 20);
 
         for (int i = 0; i < NODE_COUNT; i++) {
 
@@ -77,7 +78,7 @@ public class Main extends Application {
             layout.addConnection(nodes[i], nodes[(i + 1) % NODE_COUNT], segment);
             layout.addConnection(nodes[i], nodes[(NODE_COUNT + i - 1) % NODE_COUNT], segment);
             layout.addConnection(nodes[i], anchor, radial);
-            layout.setMass(nodes[i], 1);
+            layout.setMass(nodes[i], 0.1);
         }
 
         // This part stays put.
