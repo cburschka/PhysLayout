@@ -59,13 +59,13 @@ public class Main extends Application {
         }
         
         // This part stays put.
-        canvas.setMass(anchor, Double.POSITIVE_INFINITY);        
+        canvas.setMass(anchor, Double.POSITIVE_INFINITY);
         SpringSimulation simulation = new SpringSimulation(canvas);
         
         primaryStage.setScene(scene);
         primaryStage.show();
         simulation.createODE();
-        simulation.runSimulation();
+        simulation.runSimulation(1e-2);
     }
 
     /**
