@@ -28,4 +28,6 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.10'
     compile(group: 'org.apache.commons', name: 'commons-math3', version: '3.2')
     compile(group: 'org.apache.commons', name: 'commons-math3', version: '3.2', classifier: 'sources')
+    compile(group: 'org.jfxtras', name: 'jfxtras-labs', version: '8.0-r1')
+    compile(group: 'org.jfxtras', name: 'jfxtras-labs', version: '8.0-r1', classifier: 'sources')
 }

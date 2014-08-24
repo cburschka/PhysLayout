@@ -79,9 +79,20 @@ public class SpringSimulation {
 
                 // Simulate in dt-sized steps until caught up.
                 while (nextTimeStamp < now) {
+                    for (int i = 0; i < nodes.length; i++) {
+                        // If the node has been moved externally or pressed, update.
+                        if (nodes[i].getLayoutX() != y[4*i] || nodes[i].getLayoutY() != y[4*i+1] || nodes[i].isPressed()) {
+                            y[4*i] = nodes[i].getLayoutX();
+                            y[4*i+1] = nodes[i].getLayoutY();
+                            // Reset its momentum, since the user is "holding" it.
+                            y[4*i+2] = 0;
+                            y[4*i+3] = 0;
+                        }
+                    }
                     integrator.integrate(ode, time, y, tPlusDt, y);
                     for (int i = 0; i < nodes.length; i++) {
-                        nodes[i].relocate(y[4 * i], y[4 * i + 1]);
+                        nodes[i].setLayoutX(y[4 * i]);
+                        nodes[i].setLayoutY(y[4 * i + 1]);
                     }
 
                     timeStamp = nextTimeStamp;
