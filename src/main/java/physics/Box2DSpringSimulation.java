@@ -1,7 +1,9 @@
 package physics;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import javafx.scene.Node;
 import layout.PhysLayout;
 import org.jbox2d.common.Vec2;
@@ -19,11 +21,13 @@ public class Box2DSpringSimulation {
     private final PhysLayout layout;
     private final Map<Node, Body> bodies;
     private final World world;
+    private final Set<ForceField> fields;
     private double friction;
 
     public Box2DSpringSimulation(PhysLayout layout) {
         this.layout = layout;
         bodies = new HashMap<>();
+        fields = new HashSet<>();
 
         // New zero-gravity world:
         world = new World(new Vec2(0, 0));
@@ -62,6 +66,9 @@ public class Box2DSpringSimulation {
         });
         bodies.values().stream().forEach((a) -> {
             applyFriction(a);
+            fields.stream().forEach((field) -> {
+                a.applyForceToCenter(field.force(a.getWorldCenter()));
+            });
         });
     }
 }
