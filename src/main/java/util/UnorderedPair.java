@@ -13,7 +13,15 @@ public class UnorderedPair<T> {
         this.a = a;
         this.b = b;
     }
-    
+
+    public T getA() {
+        return a;
+    }
+
+    public T getB() {
+        return b;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;

@@ -3,6 +3,7 @@ package layout;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
@@ -90,5 +91,9 @@ public class PhysLayout {
 
     public Set<Node> getNodes() {
         return nodes;
+    }
+
+    public Iterable<Entry<UnorderedPair<Node>,Spring>> getAllConnections() {
+        return connections.entrySet();
     }
 }
