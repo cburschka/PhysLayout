@@ -2,13 +2,11 @@ package physics;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import javafx.scene.Node;
 import layout.PhysLayout;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.World;
-import util.UnorderedPair;
 
 /**
  * Manage a JBox2D simulation of multiple JavaFX nodes. Nodes have no collision,
@@ -59,11 +57,11 @@ public class Box2DSpringSimulation {
     }
 
     private void applyAllForces() {
-        for (Entry<UnorderedPair<Node>, Spring> e : layout.getAllConnections()) {
+        layout.getAllConnections().stream().forEach((e) -> {
             applySpring(bodies.get(e.getKey().getA()), bodies.get(e.getKey().getB()), e.getValue());
-        }
-        for (Body a : bodies.values()) {
+        });
+        bodies.values().stream().forEach((a) -> {
             applyFriction(a);
-        }
+        });
     }
 }

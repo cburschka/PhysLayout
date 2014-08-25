@@ -93,7 +93,7 @@ public class PhysLayout {
         return nodes;
     }
 
-    public Iterable<Entry<UnorderedPair<Node>,Spring>> getAllConnections() {
+    public Set<Entry<UnorderedPair<Node>, Spring>> getAllConnections() {
         return connections.entrySet();
     }
 }
