@@ -48,11 +48,9 @@ public class Box2DSpringSimulation {
     private void applySpring(Body a, Body b, Spring spring) {
         Vec2 pA = a.getWorldCenter();
         Vec2 pB = b.getWorldCenter();
-        Vec2 diff = pB.sub(pA);
-        double force = spring.getForce(diff.normalize());
-        diff.mulLocal((float) force);
-        a.applyForceToCenter(diff);
-        b.applyForceToCenter(diff.negate());
+        Vec2 force = spring.getForce(pA, pB);
+        a.applyForceToCenter(force);
+        b.applyForceToCenter(force.negate());
     }
 
     private void applyFriction(Body a) {
