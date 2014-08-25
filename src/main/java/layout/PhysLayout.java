@@ -12,8 +12,6 @@ import util.UnorderedPair;
 
 public class PhysLayout {
 
-    //private double timeStep = 1E-3;
-
     private final Pane root;
     private final Set<Node> nodes;
 

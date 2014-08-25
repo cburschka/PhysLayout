@@ -67,6 +67,8 @@ public class Box2DSpringSimulation {
 
                 // Simulate in dt-sized steps until caught up.
                 while (nextTimeStamp < now) {
+
+                    /*
                     bodies.entrySet().stream().forEach((e) -> {
                         Vec2 relative = new Vec2((float) e.getKey().getLayoutX(), (float) e.getKey().getLayoutY());
                         relative.subLocal(e.getValue().getWorldCenter());
@@ -78,6 +80,7 @@ public class Box2DSpringSimulation {
                             e.getValue().setLinearVelocity(new Vec2());
                         }
                     });
+                    */
 
                     step(dt);
 
