@@ -10,6 +10,7 @@ import layout.PhysLayout;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.BodyDef;
+import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.World;
 
 /**
@@ -24,7 +25,7 @@ public class Box2DSpringSimulation {
     private final Map<Node, Body> bodies;
     private final World world;
     private final Set<ForceField> fields;
-    private double friction;
+    private double friction = 0.5;
     private long timeStamp;
 
     public Box2DSpringSimulation(PhysLayout layout) {
@@ -34,11 +35,14 @@ public class Box2DSpringSimulation {
 
         // New zero-gravity world:
         world = new World(new Vec2(0, 0));
-        BodyDef def = new BodyDef();
 
         layout.getNodes().stream().forEach((node) -> {
+            BodyDef def = new BodyDef();
             def.position.set((float) node.getLayoutX(), (float) node.getLayoutY());
+            // Infinite-mass bodies are immovable.
+            def.type = layout.getMass(node) == Double.POSITIVE_INFINITY ? BodyType.STATIC : BodyType.DYNAMIC;
             Body body = world.createBody(def);
+
             // Attach an infinitely dense point mass to the body:
             body.createFixture(new ShapelessShape((layout.getMass(node))), Float.POSITIVE_INFINITY);
             bodies.put(node, body);
