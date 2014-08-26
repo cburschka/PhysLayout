@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import javafx.animation.AnimationTimer;
+import javafx.collections.SetChangeListener;
 import javafx.scene.Node;
 import layout.PhysLayout;
 import org.jbox2d.common.Vec2;
@@ -37,16 +38,37 @@ public class Box2DSpringSimulation {
         world = new World(new Vec2(0, 0));
 
         layout.getNodes().stream().forEach((node) -> {
-            BodyDef def = new BodyDef();
-            def.position.set((float) node.getLayoutX(), (float) node.getLayoutY());
-            // Infinite-mass bodies are immovable.
-            def.type = layout.getMass(node) == Double.POSITIVE_INFINITY ? BodyType.STATIC : BodyType.DYNAMIC;
-            Body body = world.createBody(def);
-
-            // Attach an infinitely dense point mass to the body:
-            body.createFixture(new ShapelessShape((layout.getMass(node))), Float.POSITIVE_INFINITY);
-            bodies.put(node, body);
+            createBody(node);
         });
+
+        layout.addNodeListener((SetChangeListener.Change<? extends Node> change) -> {
+            if (change.wasAdded()) {
+                createBody(change.getElementAdded());
+            }
+            if (change.wasRemoved()) {
+                world.destroyBody(bodies.get(change.getElementRemoved()));
+                bodies.remove(change.getElementRemoved());
+            }
+        });
+    }
+
+    private void createBody(Node node) {
+        BodyDef def = new BodyDef();
+        def.position.set((float) node.getLayoutX(), (float) node.getLayoutY());
+        // Infinite-mass bodies are immovable.
+        def.type = layout.getMass(node) == Double.POSITIVE_INFINITY ? BodyType.STATIC : BodyType.DYNAMIC;
+        Body body = world.createBody(def);
+        // Attach an infinitely dense point mass to the body:
+        body.createFixture(new ShapelessShape((layout.getMass(node))), Float.POSITIVE_INFINITY);
+        bodies.put(node, body);
+    }
+
+    public double getFriction(double friction) {
+        return this.friction;
+    }
+
+    public void setFriction(double friction) {
+        this.friction = friction;
     }
 
     public void step(double dt) {

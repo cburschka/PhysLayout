@@ -1,10 +1,11 @@
 package layout;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import javafx.beans.property.ReadOnlySetWrapper;
+import javafx.collections.SetChangeListener;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import physics.Spring;
@@ -13,7 +14,7 @@ import util.UnorderedPair;
 public class PhysLayout {
 
     private final Pane root;
-    private final Set<Node> nodes;
+    private final ReadOnlySetWrapper<Node> nodes;
 
     private final Map<UnorderedPair<Node>, Spring> connections;
     private final Map<Node, Map<Node, Spring>> connectionsTo;
@@ -21,7 +22,7 @@ public class PhysLayout {
 
     public PhysLayout(Pane root) {
         this.root = root;
-        nodes = new HashSet<>();
+        nodes = new ReadOnlySetWrapper<>();
         connections = new HashMap<>();
         connectionsTo = new HashMap<>();
         mass = new HashMap<>();
@@ -88,10 +89,14 @@ public class PhysLayout {
     }
 
     public Set<Node> getNodes() {
-        return nodes;
+        return nodes.getReadOnlyProperty();
     }
 
     public Set<Entry<UnorderedPair<Node>, Spring>> getAllConnections() {
         return connections.entrySet();
+    }
+
+    public void addNodeListener(SetChangeListener<? super Node> listener) {
+        nodes.addListener(listener);
     }
 }
