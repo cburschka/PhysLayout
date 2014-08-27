@@ -51,8 +51,8 @@ public class Main extends Application {
         MouseControlUtil.makeDraggable(anchor);
 
         double radius = Math.min(WIDTH, HEIGHT) / 3;
-        Spring radial = new Spring(radius, 20);
-        Spring segment = new Spring(Math.PI * radius * 2 / NODE_COUNT, 20);
+        Spring radial = new Spring(radius, 10);
+        Spring segment = new Spring(2 * radius * Math.sin(Math.PI / NODE_COUNT), 10);
 
         for (int i = 0; i < NODE_COUNT; i++) {
 
@@ -77,9 +77,13 @@ public class Main extends Application {
             line.toBack();
 
             layout.addConnection(nodes[i], nodes[(i + 1) % NODE_COUNT], segment);
-            layout.addConnection(nodes[i], nodes[(NODE_COUNT + i - 1) % NODE_COUNT], segment);
             layout.addConnection(nodes[i], anchor, radial);
-            layout.setMass(nodes[i], 0.1);
+            layout.setMass(nodes[i], 0.5);
+        }
+        for (int i = 0; i < NODE_COUNT; i++) {
+            for (int j = 2; j < NODE_COUNT; j++) {
+                layout.addConnection(nodes[i], nodes[(i + j) % NODE_COUNT], new Spring(2 * radius * Math.sin(j * Math.PI / NODE_COUNT), 10));
+            }
         }
 
         // This part stays put.
