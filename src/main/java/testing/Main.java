@@ -8,6 +8,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.stage.Stage;
+import jfxtras.labs.util.event.MouseControlUtil;
 import layout.PhysLayout;
 import physics.Box2DSpringSimulation;
 import physics.Spring;
@@ -45,9 +46,10 @@ public class Main extends Application {
             nodes[i].relocate(Math.random() * WIDTH, Math.random() * HEIGHT);
             nodes[i].setRadius(NODE_SIZE);
             root.getChildren().add(nodes[i]);
-            //MouseControlUtil.makeDraggable(nodes[i]);
+            MouseControlUtil.makeDraggable(nodes[i]);
         }
-        //MouseControlUtil.makeDraggable(anchor);
+        MouseControlUtil.makeDraggable(anchor);
+
         double radius = Math.min(WIDTH, HEIGHT) / 3;
         Spring radial = new Spring(radius, 20);
         Spring segment = new Spring(Math.PI * radius * 2 / NODE_COUNT, 20);
