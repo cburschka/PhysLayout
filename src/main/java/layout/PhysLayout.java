@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import javafx.beans.property.ReadOnlySetWrapper;
+import javafx.collections.FXCollections;
 import javafx.collections.SetChangeListener;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
@@ -22,7 +23,7 @@ public class PhysLayout {
 
     public PhysLayout(Pane root) {
         this.root = root;
-        nodes = new ReadOnlySetWrapper<>();
+        nodes = new ReadOnlySetWrapper<>(FXCollections.observableSet());
         connections = new HashMap<>();
         connectionsTo = new HashMap<>();
         mass = new HashMap<>();
