@@ -8,6 +8,7 @@ import javafx.animation.AnimationTimer;
 import javafx.collections.SetChangeListener;
 import javafx.scene.Node;
 import layout.PhysLayout;
+import org.jbox2d.common.Transform;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.BodyDef;
@@ -89,26 +90,26 @@ public class Box2DSpringSimulation {
 
                 // Simulate in dt-sized steps until caught up.
                 while (nextTimeStamp < now) {
-
-                    /*
+                    final long nt = nextTimeStamp;
                     bodies.entrySet().stream().forEach((e) -> {
                         Vec2 relative = new Vec2((float) e.getKey().getLayoutX(), (float) e.getKey().getLayoutY());
-                        relative.subLocal(e.getValue().getWorldCenter());
+                        relative.subLocal(e.getValue().getPosition());
+
                         // If the node has been moved externally or pressed, update.
-                        // Tolerance is 1e-6f to account for rounding between JBox2D float and JavaFX double.
-                        if (relative.length() > 1e-6f || e.getKey().isPressed()) {
-                            e.getValue().getTransform().p.addLocal(relative);
+                        if (relative.length() > 0 || e.getKey().isPressed()) {
+                            Vec2 p = e.getValue().getTransform().p;
+                            e.getValue().setTransform(p.add(relative), e.getValue().getAngle());
                             // Reset its momentum, since the user is "holding" it.
                             e.getValue().setLinearVelocity(new Vec2());
                         }
                     });
-                    */
 
                     step(dt);
 
                     bodies.entrySet().stream().forEach((e) -> {
                         Vec2 p = e.getValue().getWorldCenter();
-                        e.getKey().relocate(p.x, p.y);
+                        e.getKey().setLayoutX(p.x);
+                        e.getKey().setLayoutY(p.y);
                     });
 
                     timeStamp = nextTimeStamp;
