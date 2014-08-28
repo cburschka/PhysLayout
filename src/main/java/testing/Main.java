@@ -113,6 +113,7 @@ public class Main extends Application {
         });
         step.setOnAction((ActionEvent event) -> {
             if (!boxSimulation.isRunning()) {
+                boxSimulation.updateModel();
                 boxSimulation.step();
                 boxSimulation.updateView();
             }

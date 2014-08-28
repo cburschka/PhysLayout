@@ -87,6 +87,22 @@ public class Box2DSpringSimulation {
         world.step((float) (timeStep * 1e-9), ITER_VELOCITY, ITER_POS);
     }
 
+    public void updateModel() {
+        bodies.entrySet().stream().forEach((e) -> {
+            Vec2 relative = new Vec2((float) e.getKey().getLayoutX()), (float) e.getKey().getLayoutY());
+            relative.subLocal(e.getValue().getPosition());
+
+            // If the node has been moved externally or pressed, update.
+            if (relative.length() > 0 || e.getKey().isPressed()) {
+                Vec2 p = e.getValue().getTransform().p;
+                e.getValue().setTransform(p.add(relative), e.getValue().getAngle());
+                // Reset its momentum, since the user is "holding" it.
+                e.getValue().setLinearVelocity(new Vec2());
+            }
+        });
+
+    }
+
     public void updateView() {
         bodies.entrySet().stream().forEach((e) -> {
             Vec2 p = e.getValue().getWorldCenter();
@@ -103,19 +119,8 @@ public class Box2DSpringSimulation {
 
                 // Simulate in dt-sized steps until caught up.
                 while (nextTimeStamp < now) {
-                    bodies.entrySet().stream().forEach((e) -> {
-                        Vec2 relative = new Vec2((float) e.getKey().getLayoutX(), (float) e.getKey().getLayoutY());
-                        relative.subLocal(e.getValue().getPosition());
 
-                        // If the node has been moved externally or pressed, update.
-                        if (relative.length() > 0 || e.getKey().isPressed()) {
-                            Vec2 p = e.getValue().getTransform().p;
-                            e.getValue().setTransform(p.add(relative), e.getValue().getAngle());
-                            // Reset its momentum, since the user is "holding" it.
-                            e.getValue().setLinearVelocity(new Vec2());
-                        }
-                    });
-
+                    updateModel();
                     step();
                     updateView();
 
