@@ -24,7 +24,9 @@ public class Box2DSpringSimulation {
     private final Map<Node, Body> bodies;
     private final World world;
     private double friction = 0.5;
-    private long timeStamp;
+    private AnimationTimer animation;
+    private long timeStep = (long) 1e7, timeStamp = 0;
+    private boolean running;
 
     public Box2DSpringSimulation(PhysLayout layout) {
         this.layout = layout;
@@ -46,6 +48,8 @@ public class Box2DSpringSimulation {
                 bodies.remove(change.getElementRemoved());
             }
         });
+
+        this.createAnimation();
     }
 
     private void createBody(Node node) {
@@ -74,14 +78,11 @@ public class Box2DSpringSimulation {
         world.step((float) dt, 6, 3);
     }
 
-    public void runSimulation(double dt) {
-        final long nanoTimeStep = (long) (dt * 1e9);
-        timeStamp = System.nanoTime();
-
-        AnimationTimer frameListener = new AnimationTimer() {
+    private void createAnimation() {
+        animation = new AnimationTimer() {
             @Override
             public void handle(long now) {
-                long nextTimeStamp = timeStamp + nanoTimeStep;
+                long nextTimeStamp = timeStamp + timeStep;
 
                 // Simulate in dt-sized steps until caught up.
                 while (nextTimeStamp < now) {
@@ -98,7 +99,7 @@ public class Box2DSpringSimulation {
                         }
                     });
 
-                    step(dt);
+                    step(timeStep * 1e-9);
 
                     bodies.entrySet().stream().forEach((e) -> {
                         Vec2 p = e.getValue().getWorldCenter();
@@ -107,12 +108,47 @@ public class Box2DSpringSimulation {
                     });
 
                     timeStamp = nextTimeStamp;
-                    nextTimeStamp = timeStamp + nanoTimeStep;
+                    nextTimeStamp = timeStamp + timeStep;
                 }
             }
         };
+    }
 
-        frameListener.start();
+    public void startSimulation() {
+        running = true;
+        timeStamp = System.nanoTime();
+        animation.start();
+    }
+
+    public void stopSimulation() {
+        running = false;
+        animation.stop();
+    }
+
+    public boolean isRunning() {
+        return running;
+    }
+
+    /**
+     * Set the simulated time step.
+     *
+     * This is distinct from the frame rate, and will always be fixed.
+     *
+     * @param dt time step in seconds.
+     */
+    public void setTimeStep(double dt) {
+        timeStep = (long) (dt * 1e9);
+    }
+
+    /**
+     * Set the simulated time step.
+     *
+     * This is distinct from the frame rate, and will always be fixed.
+     *
+     * @param dt time step in seconds.
+     */
+    public double getTimeStep() {
+        return timeStep * 1e-9;
     }
 
     /**
