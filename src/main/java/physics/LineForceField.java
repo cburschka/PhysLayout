@@ -20,7 +20,7 @@ public class LineForceField extends ForceField {
      * Create a new field.
      *
      * @param location a single point along the line.
-     * @param direction the direction of the line
+     * @param direction the direction of the line.
      * @param strength the strength of the field.
      */
     public LineForceField(Vec2 location, Vec2 direction, double strength) {

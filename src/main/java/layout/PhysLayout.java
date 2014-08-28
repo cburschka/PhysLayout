@@ -1,6 +1,7 @@
 package layout;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -9,6 +10,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.SetChangeListener;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
+import physics.ForceField;
 import physics.Spring;
 import util.UnorderedPair;
 
@@ -16,6 +18,7 @@ public class PhysLayout {
 
     private final Pane root;
     private final ReadOnlySetWrapper<Node> nodes;
+    public final Set<ForceField> fields;
 
     private final Map<UnorderedPair<Node>, Spring> connections;
     private final Map<Node, Map<Node, Spring>> connectionsTo;
@@ -27,6 +30,7 @@ public class PhysLayout {
         connections = new HashMap<>();
         connectionsTo = new HashMap<>();
         mass = new HashMap<>();
+        fields = new HashSet<>();
     }
 
     public Spring getConnection(Node a, Node b) {

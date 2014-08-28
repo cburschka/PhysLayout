@@ -22,6 +22,8 @@ public class UniformForceField extends ForceField {
      *
      * @param location a point on the intersection with X-Y.
      * @param normal the normal vector to the plane.
+     * @param strength the strength of the field.
+
      */
     public UniformForceField(Vec2 location, Vec2 normal, double strength) {
         this.location = location;
