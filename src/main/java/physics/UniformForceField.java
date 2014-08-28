@@ -34,6 +34,18 @@ public class UniformForceField extends ForceField {
         projection(location, intersection);
     }
 
+    /**
+     * Create a new field.
+     *
+     * @param location a point on the intersection with X-Y.
+     * @param angle the angle of the normal vector, clockwise from (1,0)
+     * @param strength the strength of the field.
+
+     */
+    public UniformForceField(Vec2 location, double angle, double strength) {
+        this(location, location.add(new Vec2((float)Math.cos(angle), (float)Math.sin(angle))), strength);
+    }
+
     @Override
     public Vec2 force(Vec2 point) {
         Vec2 relative = point.sub(location);

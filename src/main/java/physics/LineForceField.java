@@ -27,10 +27,20 @@ public class LineForceField extends ForceField {
         this.location = location;
         this.direction = direction;
         this.strength = strength;
-
         // Normalize, so direction is a unit vector, and location is perpendicular.
         direction.normalize();
         projection(location, direction);
+    }
+
+    /**
+     * Create a new field.
+     *
+     * @param location a single point along the line.
+     * @param angle the angle of the line, clockwise from (1,0).
+     * @param strength the strength of the field.
+     */
+    public LineForceField(Vec2 location, double angle, double strength) {
+        this(location, new Vec2((float) Math.cos(angle), (float) Math.sin(angle)), strength);
     }
 
     @Override
