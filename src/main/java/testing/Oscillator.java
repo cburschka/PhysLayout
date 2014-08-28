@@ -67,8 +67,8 @@ public class Oscillator extends Application {
         Box2DSpringSimulation boxSimulation = new Box2DSpringSimulation(layout);
         boxSimulation.setFriction(0);
 
-        Button startStop = new Button("Start"), step = new Button("Step");
-        menu.getItems().addAll(startStop, step);
+        Button startStop = new Button("Start"), step = new Button("Step"), reset = new Button("Reset");
+        menu.getItems().addAll(startStop, step, reset);
         startStop.setOnAction((ActionEvent event) -> {
             if (boxSimulation.isRunning()) {
                 boxSimulation.stopSimulation();
@@ -84,6 +84,13 @@ public class Oscillator extends Application {
             }
         });
         step.disableProperty().bind(boxSimulation.getRunning());
+        reset.setOnAction((ActionEvent event) -> {
+            a.setLayoutX(WIDTH / 4);
+            a.setLayoutY(HEIGHT / 2);
+
+            b.setLayoutX(3 * WIDTH / 4);
+            b.setLayoutY(HEIGHT / 2);
+        });
 
         boxSimulation.getRunning().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             startStop.setText(newValue ? "Stop" : "Start");
