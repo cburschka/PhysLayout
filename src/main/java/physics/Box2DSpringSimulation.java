@@ -26,6 +26,7 @@ public class Box2DSpringSimulation {
     private double friction = 0.5;
     private AnimationTimer animation;
     private long timeStep = (long) 1e7, timeStamp = 0;
+    private static final int ITER_VELOCITY = 6, ITER_POS = 3;
     private boolean running;
 
     public Box2DSpringSimulation(PhysLayout layout) {
@@ -52,6 +53,12 @@ public class Box2DSpringSimulation {
         this.createAnimation();
     }
 
+    public Box2DSpringSimulation(PhysLayout layout, double dt, double friction) {
+        this(layout);
+        setTimeStep(dt);
+        setFriction(friction);
+    }
+
     private void createBody(Node node) {
         BodyDef def = new BodyDef();
         def.position.set((float) node.getLayoutX(), (float) node.getLayoutY());
@@ -75,7 +82,7 @@ public class Box2DSpringSimulation {
         // Box2D physics work by applying a fixed force on every timestep.
         applyAllForces();
         // 6 iterations of u' and 3 iterations of u (recommended value).
-        world.step((float) dt, 6, 3);
+        world.step((float) dt, ITER_VELOCITY, ITER_POS);
     }
 
     private void createAnimation() {
