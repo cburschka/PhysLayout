@@ -32,32 +32,32 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        BorderPane window = new BorderPane();
+        BorderPane root = new BorderPane();
         ToolBar menu = new ToolBar();
-        Pane root = new Pane();
-        window.setCenter(root);
-        window.setTop(menu);
+        Pane canvas = new Pane();
+        root.setCenter(canvas);
+        root.setTop(menu);
 
-        PhysLayout layout = new PhysLayout(root);
-        Scene scene = new Scene(window, WIDTH, HEIGHT);
+        PhysLayout layout = new PhysLayout(canvas);
+        Scene scene = new Scene(root, WIDTH, HEIGHT);
         primaryStage.setTitle("Springs");
 
-        Circle[] nodes = new Circle[NODE_COUNT];
+        Circle[] circles = new Circle[NODE_COUNT];
 
         Circle anchor = new Circle();
         anchor.setFill(Color.BLACK);
 
         anchor.relocate(WIDTH * 0.5, HEIGHT * 0.5);
         anchor.setRadius(NODE_SIZE);
-        root.getChildren().add(anchor);
+        canvas.getChildren().add(anchor);
 
         for (int i = 0; i < NODE_COUNT; i++) {
-            nodes[i] = new Circle();
-            nodes[i].setFill(Color.hsb(360.0 * i / NODE_COUNT, 1.0, 0.5));
-            nodes[i].relocate(Math.random() * WIDTH, Math.random() * HEIGHT);
-            nodes[i].setRadius(NODE_SIZE);
-            root.getChildren().add(nodes[i]);
-            MouseControlUtil.makeDraggable(nodes[i]);
+            circles[i] = new Circle();
+            circles[i].setFill(Color.hsb(360.0 * i / NODE_COUNT, 1.0, 0.5));
+            circles[i].relocate(Math.random() * WIDTH, Math.random() * HEIGHT);
+            circles[i].setRadius(NODE_SIZE);
+            canvas.getChildren().add(circles[i]);
+            MouseControlUtil.makeDraggable(circles[i]);
         }
         MouseControlUtil.makeDraggable(anchor);
 
@@ -70,30 +70,30 @@ public class Main extends Application {
             Line line = new Line();
             line.setFill(Color.BLACK);
             line.setStroke(Color.BLACK);
-            line.startXProperty().bind(nodes[i].layoutXProperty());
-            line.startYProperty().bind(nodes[i].layoutYProperty());
-            line.endXProperty().bind(nodes[(i + 1) % NODE_COUNT].layoutXProperty());
-            line.endYProperty().bind(nodes[(i + 1) % NODE_COUNT].layoutYProperty());
-            root.getChildren().add(line);
+            line.startXProperty().bind(circles[i].layoutXProperty());
+            line.startYProperty().bind(circles[i].layoutYProperty());
+            line.endXProperty().bind(circles[(i + 1) % NODE_COUNT].layoutXProperty());
+            line.endYProperty().bind(circles[(i + 1) % NODE_COUNT].layoutYProperty());
+            canvas.getChildren().add(line);
             line.toBack();
 
             line = new Line();
             line.setFill(Color.BLACK);
             line.setStroke(Color.BLACK);
-            line.startXProperty().bind(nodes[i].layoutXProperty());
-            line.startYProperty().bind(nodes[i].layoutYProperty());
+            line.startXProperty().bind(circles[i].layoutXProperty());
+            line.startYProperty().bind(circles[i].layoutYProperty());
             line.endXProperty().bind(anchor.layoutXProperty());
             line.endYProperty().bind(anchor.layoutYProperty());
-            root.getChildren().add(line);
+            canvas.getChildren().add(line);
             line.toBack();
 
-            layout.addConnection(nodes[i], nodes[(i + 1) % NODE_COUNT], segment);
-            layout.addConnection(nodes[i], anchor, radial);
-            layout.setMass(nodes[i], 0.5);
+            layout.addConnection(circles[i], circles[(i + 1) % NODE_COUNT], segment);
+            layout.addConnection(circles[i], anchor, radial);
+            layout.setMass(circles[i], 0.5);
         }
         for (int i = 0; i < NODE_COUNT; i++) {
             for (int j = 2; j < NODE_COUNT; j++) {
-                layout.addConnection(nodes[i], nodes[(i + j) % NODE_COUNT], new Spring(2 * radius * Math.sin(j * Math.PI / NODE_COUNT), 10));
+                layout.addConnection(circles[i], circles[(i + j) % NODE_COUNT], new Spring(2 * radius * Math.sin(j * Math.PI / NODE_COUNT), 10));
             }
         }
 
@@ -119,9 +119,9 @@ public class Main extends Application {
         });
         step.disableProperty().bind(boxSimulation.getRunning());
         reset.setOnAction((ActionEvent event) -> {
-            for (Circle node : nodes) {
-                node.setLayoutX(Math.random() * WIDTH);
-                node.setLayoutY(Math.random() * HEIGHT);
+            for (Circle circle : circles) {
+                circle.setLayoutX(Math.random() * WIDTH);
+                circle.setLayoutY(Math.random() * HEIGHT);
             }
         });
 
