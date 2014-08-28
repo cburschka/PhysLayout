@@ -27,7 +27,7 @@ public class Box2DSpringSimulation {
     private final World world;
     private double friction = 0.5;
     private AnimationTimer animation;
-    private long timeStep = (long) 1e7, timeStamp = 0;
+    private long timeStep = (long) 5e5, timeStamp = 0;
     private static final int ITER_VELOCITY = 6, ITER_POS = 3;
     private ReadOnlyBooleanWrapper running = new ReadOnlyBooleanWrapper(false);
 
