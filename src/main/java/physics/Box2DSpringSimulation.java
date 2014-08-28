@@ -78,11 +78,19 @@ public class Box2DSpringSimulation {
         this.friction = friction;
     }
 
-    public void step(double dt) {
+    public void step() {
         // Box2D physics work by applying a fixed force on every timestep.
         applyAllForces();
         // 6 iterations of u' and 3 iterations of u (recommended value).
-        world.step((float) dt, ITER_VELOCITY, ITER_POS);
+        world.step((float) (timeStep * 1e-9), ITER_VELOCITY, ITER_POS);
+    }
+
+    public void updateView() {
+        bodies.entrySet().stream().forEach((e) -> {
+            Vec2 p = e.getValue().getWorldCenter();
+            e.getKey().setLayoutX(p.x);
+            e.getKey().setLayoutY(p.y);
+        });
     }
 
     private void createAnimation() {
@@ -106,13 +114,8 @@ public class Box2DSpringSimulation {
                         }
                     });
 
-                    step(timeStep * 1e-9);
-
-                    bodies.entrySet().stream().forEach((e) -> {
-                        Vec2 p = e.getValue().getWorldCenter();
-                        e.getKey().setLayoutX(p.x);
-                        e.getKey().setLayoutY(p.y);
-                    });
+                    step();
+                    updateView();
 
                     timeStamp = nextTimeStamp;
                     nextTimeStamp = timeStamp + timeStep;
