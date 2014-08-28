@@ -2,7 +2,13 @@ package testing;
 
 import javafx.application.Application;
 import static javafx.application.Application.launch;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.ToolBar;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -26,9 +32,14 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+        BorderPane window = new BorderPane();
+        ToolBar menu = new ToolBar();
         Pane root = new Pane();
+        window.setCenter(root);
+        window.setTop(menu);
+
         PhysLayout layout = new PhysLayout(root);
-        Scene scene = new Scene(root, WIDTH, HEIGHT);
+        Scene scene = new Scene(window, WIDTH, HEIGHT);
         primaryStage.setTitle("Springs");
 
         Circle[] nodes = new Circle[NODE_COUNT];
@@ -88,10 +99,39 @@ public class Main extends Application {
 
         // This part stays put.
         layout.setMass(anchor, Double.POSITIVE_INFINITY);
+
         Box2DSpringSimulation boxSimulation = new Box2DSpringSimulation(layout);
 
+        Button startStop = new Button("Start"), step = new Button("Step"), reset = new Button("Randomize");
+        menu.getItems().addAll(startStop, step, reset);
+        startStop.setOnAction((ActionEvent event) -> {
+            if (boxSimulation.isRunning()) {
+                boxSimulation.stopSimulation();
+            } else {
+                boxSimulation.startSimulation();
+            }
+        });
+        step.setOnAction((ActionEvent event) -> {
+            if (!boxSimulation.isRunning()) {
+                boxSimulation.step();
+                boxSimulation.updateView();
+            }
+        });
+        step.disableProperty().bind(boxSimulation.getRunning());
+        reset.setOnAction((ActionEvent event) -> {
+            for (Circle node : nodes) {
+                node.setLayoutX(Math.random() * WIDTH);
+                node.setLayoutY(Math.random() * HEIGHT);
+            }
+        });
+
+        boxSimulation.getRunning().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+            startStop.setText(newValue ? "Stop" : "Start");
+        });
+        startStop.setMinWidth(startStop.getWidth() + 50);
         primaryStage.setScene(scene);
         primaryStage.show();
+
         boxSimulation.startSimulation();
     }
 
