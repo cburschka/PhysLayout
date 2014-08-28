@@ -3,6 +3,8 @@ package physics;
 import java.util.HashMap;
 import java.util.Map;
 import javafx.animation.AnimationTimer;
+import javafx.beans.property.ReadOnlyBooleanProperty;
+import javafx.beans.property.ReadOnlyBooleanWrapper;
 import javafx.collections.SetChangeListener;
 import javafx.scene.Node;
 import layout.PhysLayout;
@@ -27,7 +29,7 @@ public class Box2DSpringSimulation {
     private AnimationTimer animation;
     private long timeStep = (long) 1e7, timeStamp = 0;
     private static final int ITER_VELOCITY = 6, ITER_POS = 3;
-    private boolean running;
+    private ReadOnlyBooleanWrapper running = new ReadOnlyBooleanWrapper(false);
 
     public Box2DSpringSimulation(PhysLayout layout) {
         this.layout = layout;
@@ -125,18 +127,22 @@ public class Box2DSpringSimulation {
     }
 
     public void startSimulation() {
-        running = true;
+        running.set(true);
         timeStamp = System.nanoTime();
         animation.start();
     }
 
     public void stopSimulation() {
-        running = false;
+        running.set(false);
         animation.stop();
     }
 
     public boolean isRunning() {
-        return running;
+        return running.get();
+    }
+
+    public ReadOnlyBooleanProperty getRunning() {
+        return running.getReadOnlyProperty();
     }
 
     /**
