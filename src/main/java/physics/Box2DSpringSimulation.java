@@ -100,7 +100,6 @@ public class Box2DSpringSimulation {
                 e.getValue().setLinearVelocity(new Vec2());
             }
         });
-
     }
 
     public void updateView() {
@@ -119,7 +118,6 @@ public class Box2DSpringSimulation {
 
                 // Simulate in dt-sized steps until caught up.
                 while (nextTimeStamp < now) {
-
                     updateModel();
                     step();
                     updateView();
@@ -162,11 +160,9 @@ public class Box2DSpringSimulation {
     }
 
     /**
-     * Set the simulated time step.
+     * Get the simulated time step.
      *
-     * This is distinct from the frame rate, and will always be fixed.
-     *
-     * @param dt time step in seconds.
+     * @return the current timestep in seconds.
      */
     public double getTimeStep() {
         return timeStep * 1e-9;
