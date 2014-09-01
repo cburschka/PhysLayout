@@ -1,6 +1,6 @@
 package physics;
 
-import org.jbox2d.common.Vec2;
+import javafx.geometry.Point2D;
 
 /**
  * A cylindrical field projected by an infinite line.
@@ -12,8 +12,8 @@ import org.jbox2d.common.Vec2;
  */
 public class LineForceField extends ForceField {
 
-    private final Vec2 location;
-    private final Vec2 direction;
+    private final Point2D location;
+    private final Point2D direction;
     private final double strength;
 
     /**
@@ -23,13 +23,11 @@ public class LineForceField extends ForceField {
      * @param direction the direction of the line.
      * @param strength the strength of the field.
      */
-    public LineForceField(Vec2 location, Vec2 direction, double strength) {
-        this.location = location;
-        this.direction = direction;
-        this.strength = strength;
+    public LineForceField(Point2D location, Point2D direction, double strength) {
         // Normalize, so direction is a unit vector, and location is perpendicular.
-        direction.normalize();
-        projection(location, direction);
+        this.direction = direction.normalize();
+        this.location = projection(location, this.direction);
+        this.strength = strength;
     }
 
     /**
@@ -39,15 +37,14 @@ public class LineForceField extends ForceField {
      * @param angle the angle of the line, clockwise from (1,0).
      * @param strength the strength of the field.
      */
-    public LineForceField(Vec2 location, double angle, double strength) {
-        this(location, new Vec2((float) Math.cos(angle), (float) Math.sin(angle)), strength);
+    public LineForceField(Point2D location, double angle, double strength) {
+        this(location, new Point2D(Math.cos(angle), Math.sin(angle)), strength);
     }
 
     @Override
-    public Vec2 force(Vec2 point) {
-        Vec2 relative = point.sub(location);
-        projection(relative, direction);
-        double distance = relative.normalize();
-        return relative.mul((float) (strength / (distance * distance)));
+    public Point2D force(Point2D point) {
+        Point2D relative = projection(point.subtract(location), direction);
+        double distance = relative.magnitude();
+        return relative.multiply((strength / (distance * distance * distance)));
     }
 }

@@ -3,12 +3,12 @@ package testing;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.event.ActionEvent;
+import javafx.geometry.Point2D;
 import javafx.scene.control.Button;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import jfxtras.labs.util.event.MouseControlUtil;
-import org.jbox2d.common.Vec2;
 import physics.Spring;
 
 /**
@@ -46,19 +46,16 @@ public class Fixation extends Example {
         lines = new ArrayList<>();
         Spring[] s = new Spring[CONN];
         for (int i = 0; i < CONN; i++) {
-            Vec2 a = new Vec2((float) Math.random() * 100 - 50, (float) Math.random() * 100 - 50);
-            Vec2 b = new Vec2((float) Math.random() * 100 - 50, (float) Math.random() * 100 - 50);
-            double length = a
-                    .add(new Vec2((float) anchor.getLayoutX(), (float) anchor.getLayoutY()))
-                    .sub(b)
-                    .sub(new Vec2((float) pendulum.getLayoutX(), (float) pendulum.getLayoutY()))
-                    .length();
+            Point2D a = new Point2D(Math.random() * 100 - 50, Math.random() * 100 - 50);
+            Point2D b = new Point2D(Math.random() * 100 - 50, Math.random() * 100 - 50);
+            double length = new Point2D(anchor.getLayoutX(), anchor.getLayoutY()).add(a)
+                    .distance(new Point2D(pendulum.getLayoutX(), pendulum.getLayoutY()).add(b));
             s[i] = new Spring(length, 100, a, b);
             Line line = new Line();
-            line.startXProperty().bind(anchor.layoutXProperty().add(a.x));
-            line.startYProperty().bind(anchor.layoutYProperty().add(a.y));
-            line.endXProperty().bind(pendulum.layoutXProperty().add(b.x));
-            line.endYProperty().bind(pendulum.layoutYProperty().add(b.y));
+            line.startXProperty().bind(anchor.layoutXProperty().add(a.getX()));
+            line.startYProperty().bind(anchor.layoutYProperty().add(a.getY()));
+            line.endXProperty().bind(pendulum.layoutXProperty().add(b.getX()));
+            line.endYProperty().bind(pendulum.layoutYProperty().add(b.getY()));
             lines.add(line);
             canvas.getChildren().add(line);
             line.toBack();

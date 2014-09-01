@@ -7,6 +7,7 @@ import javafx.animation.AnimationTimer;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanWrapper;
 import javafx.collections.SetChangeListener;
+import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import layout.PhysLayout;
 import org.jbox2d.common.Vec2;
@@ -177,16 +178,16 @@ public class Box2DSpringSimulation {
      * @param spring
      */
     private void applySprings(Body a, Body b, Set<Spring> springs) {
-        Vec2 pA = a.getPosition();
-        Vec2 pB = b.getPosition();
+        Point2D pA = point(a.getPosition());
+        Point2D pB = point(b.getPosition());
 
-        Vec2 force = springs.stream().map((s) -> {
+        Point2D force = springs.stream().map((s) -> {
             return s.getForce(pA, pB);
-        }).reduce(new Vec2(), (x, y) -> {
+        }).reduce(new Point2D(0, 0), (x, y) -> {
             return x.add(y);
         });
 
-        a.applyForceToCenter(force);
+        a.applyForceToCenter(vec(force));
     }
 
     private void applyFriction(Body a) {
@@ -204,8 +205,16 @@ public class Box2DSpringSimulation {
         bodies.values().stream().forEach((a) -> {
             applyFriction(a);
             layout.getFields().stream().forEach((field) -> {
-                a.applyForceToCenter(field.force(a.getPosition()));
+                a.applyForceToCenter(vec(field.force(point(a.getPosition()))));
             });
         });
+    }
+
+    private static Point2D point(Vec2 v) {
+        return new Point2D(v.x, v.y);
+    }
+
+    private static Vec2 vec(Point2D v) {
+        return new Vec2((float) v.getX(), (float) v.getY());
     }
 }

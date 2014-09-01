@@ -1,9 +1,9 @@
 package testing;
 
+import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import jfxtras.labs.util.event.MouseControlUtil;
-import org.jbox2d.common.Vec2;
 import physics.PointForceField;
 
 /**
@@ -17,10 +17,10 @@ public class Fields extends Example {
     public Fields() {
         ball = new Circle(50, Color.RED);
         layout.addField(
-                new PointForceField(new Vec2(WIDTH / 4, HEIGHT / 4), -5e7),
-                new PointForceField(new Vec2(3 * WIDTH / 4, HEIGHT / 4), -5e7),
-                new PointForceField(new Vec2(3 * WIDTH / 4, 3 * HEIGHT / 4), -5e7),
-                new PointForceField(new Vec2(WIDTH / 4, 3 * HEIGHT / 4), -5e7)
+                new PointForceField(new Point2D(WIDTH / 4, HEIGHT / 4), -5e7),
+                new PointForceField(new Point2D(3 * WIDTH / 4, HEIGHT / 4), -5e7),
+                new PointForceField(new Point2D(3 * WIDTH / 4, 3 * HEIGHT / 4), -5e7),
+                new PointForceField(new Point2D(WIDTH / 4, 3 * HEIGHT / 4), -5e7)
         );
         canvas.getChildren().add(ball);
         canvas.getChildren().addAll(

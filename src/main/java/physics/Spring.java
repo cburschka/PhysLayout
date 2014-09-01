@@ -1,7 +1,7 @@
 package physics;
 
 import java.util.Objects;
-import org.jbox2d.common.Vec2;
+import javafx.geometry.Point2D;
 
 /**
  * An idealized mechanical spring.
@@ -12,7 +12,7 @@ public class Spring {
 
     private final double length;
     private final double strength;
-    private final Vec2 a, b;
+    private final Point2D a, b;
 
     /**
      * Create a new spring.
@@ -24,7 +24,7 @@ public class Spring {
      * @param a anchor point on a
      * @param b anchor point on b
      */
-    public Spring(double length, double strength, Vec2 a, Vec2 b) {
+    public Spring(double length, double strength, Point2D a, Point2D b) {
         assert length > 0;
         assert strength > 0;
         this.length = length;
@@ -34,7 +34,7 @@ public class Spring {
     }
 
     public Spring(double length, double strength) {
-        this(length, strength, new Vec2(), new Vec2());
+        this(length, strength, new Point2D(0, 0), new Point2D(0, 0));
     }
 
     /**
@@ -54,10 +54,10 @@ public class Spring {
      * @param b the second point
      * @return the force acting on the first point (flip sign for second)
      */
-    public Vec2 getForce(Vec2 a, Vec2 b) {
-        Vec2 relative = b.add(this.b).sub(a.add(this.a));
-        double distance = relative.normalize();
-        return relative.mul((float) getForce(distance));
+    public Point2D getForce(Point2D a, Point2D b) {
+        Point2D relative = b.add(this.b).subtract(a.add(this.a));
+        double distance = relative.magnitude();
+        return relative.multiply(getForce(distance) / distance);
     }
 
     public Spring reverse() {
@@ -82,10 +82,7 @@ public class Spring {
         if (!Objects.equals(this.a, other.a)) {
             return false;
         }
-        if (!Objects.equals(this.b, other.b)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.b, other.b);
     }
 
     @Override

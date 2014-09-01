@@ -1,6 +1,6 @@
 package physics;
 
-import org.jbox2d.common.Vec2;
+import javafx.geometry.Point2D;
 
 /**
  * Implements a field that applies a force on all particles.
@@ -11,7 +11,7 @@ import org.jbox2d.common.Vec2;
  */
 public abstract class ForceField {
 
-    public abstract Vec2 force(Vec2 location);
+    public abstract Point2D force(Point2D location);
 
     /**
      * Project a 2D vector onto another.
@@ -19,14 +19,11 @@ public abstract class ForceField {
      * Takes two vectors a and b and calculate a = b*l + c, where l is scalar
      * and c is perpendicular to b.
      *
-     * @param source the projection source (will be changed to the perpendicular
-     * remainder)
-     * @param target the projection target (unchanged)
-     * @return the scalar product
+     * @param source the projection source
+     * @param target the projection target
+     * @return the component of the source that is perpendicular to the target.
      */
-    public static double projection(Vec2 source, Vec2 target) {
-        double dot = source.x * target.x + source.y * target.y;
-        source.subLocal(target.mul((float) dot));
-        return dot;
+    public static Point2D projection(Point2D source, Point2D target) {
+        return source.subtract(target.multiply(source.dotProduct(target)));
     }
 }

@@ -1,6 +1,6 @@
 package physics;
 
-import org.jbox2d.common.Vec2;
+import javafx.geometry.Point2D;
 
 /**
  * A uniform force field projected by an infinite plane.
@@ -13,8 +13,8 @@ import org.jbox2d.common.Vec2;
  */
 public class UniformForceField extends ForceField {
 
-    private final Vec2 location;
-    private final Vec2 intersection;
+    private final Point2D location;
+    private final Point2D intersection;
     private final double strength;
 
     /**
@@ -25,12 +25,12 @@ public class UniformForceField extends ForceField {
      * @param strength the strength of the field.
 
      */
-    public UniformForceField(Vec2 location, Vec2 normal, double strength) {
+    public UniformForceField(Point2D location, Point2D normal, double strength) {
         this.location = location;
         this.strength = strength;
         normal.normalize();
 
-        this.intersection = new Vec2(normal.y, normal.x);
+        this.intersection = new Point2D(normal.getY(), normal.getX());
         projection(location, intersection);
     }
 
@@ -42,15 +42,14 @@ public class UniformForceField extends ForceField {
      * @param strength the strength of the field.
 
      */
-    public UniformForceField(Vec2 location, double angle, double strength) {
-        this(location, location.add(new Vec2((float)Math.cos(angle), (float)Math.sin(angle))), strength);
+    public UniformForceField(Point2D location, double angle, double strength) {
+        this(location, location.add(new Point2D(Math.cos(angle), Math.sin(angle))), strength);
     }
 
     @Override
-    public Vec2 force(Vec2 point) {
-        Vec2 relative = point.sub(location);
-        relative.normalize();
-        projection(relative, intersection);
-        return relative.mul((float)strength);
+    public Point2D force(Point2D point) {
+        return projection(
+                point.subtract(location).normalize(), intersection
+        ).multiply(strength);
     }
 }
