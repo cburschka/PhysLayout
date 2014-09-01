@@ -52,9 +52,23 @@ public class PhysLayout {
         return mass.getOrDefault(a, 1.0);
     }
 
-    public void addConnection(Node a, Node b, Spring s) {
+    public void addNode(Node a) {
         nodes.add(a);
-        nodes.add(b);
+    }
+
+    public void removeNode(Node a) {
+        nodes.remove(a);
+        Set<Node> nA = neighbors.get(a);
+        if (nA != null) {
+            for (Node b : nA) {
+                removeConnection(a, b);
+            }
+        }
+    }
+
+    public void addConnection(Node a, Node b, Spring s) {
+        addNode(a);
+        addNode(b);
         this.connections.put(new UnorderedPair(a, b), s);
 
         Set<Node> nA = neighbors.get(a);
@@ -77,12 +91,6 @@ public class PhysLayout {
             Set<Node> nB = neighbors.get(b);
             nA.remove(b);
             nB.remove(a);
-            if (nA.isEmpty()) {
-                nodes.remove(a);
-            }
-            if (nB.isEmpty()) {
-                nodes.remove(b);
-            }
         }
     }
 
