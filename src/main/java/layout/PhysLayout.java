@@ -1,6 +1,7 @@
 package layout;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -20,7 +21,7 @@ public class PhysLayout {
 
     private final Pane root;
     private final ReadOnlySetWrapper<Node> nodes;
-    public final Set<ForceField> fields;
+    private final Set<ForceField> fields;
 
     private final Map<Pair<Node, Node>, Set<Spring>> connections;
     private final Map<Node, Set<Node>> neighbors;
@@ -140,5 +141,17 @@ public class PhysLayout {
 
     public void addNodeListener(SetChangeListener<? super Node> listener) {
         nodes.addListener(listener);
+    }
+
+    public void addField(ForceField... field) {
+        fields.addAll(Arrays.asList(field));
+    }
+
+    public void removeField(ForceField field) {
+        fields.remove(field);
+    }
+
+    public Collection<ForceField> getFields() {
+        return fields;
     }
 }

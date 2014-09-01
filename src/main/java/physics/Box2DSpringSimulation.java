@@ -203,7 +203,7 @@ public class Box2DSpringSimulation {
         });
         bodies.values().stream().forEach((a) -> {
             applyFriction(a);
-            layout.fields.stream().forEach((field) -> {
+            layout.getFields().stream().forEach((field) -> {
                 a.applyForceToCenter(field.force(a.getPosition()));
             });
         });
