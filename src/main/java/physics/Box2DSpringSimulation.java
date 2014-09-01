@@ -29,7 +29,7 @@ public class Box2DSpringSimulation {
     private AnimationTimer animation;
     private long timeStep = (long) 5e5, timeStamp = 0;
     private static final int ITER_VELOCITY = 6, ITER_POS = 3;
-    private ReadOnlyBooleanWrapper running = new ReadOnlyBooleanWrapper(false);
+    private final ReadOnlyBooleanWrapper running = new ReadOnlyBooleanWrapper(false);
 
     public Box2DSpringSimulation(PhysLayout layout) {
         this.layout = layout;
@@ -76,7 +76,7 @@ public class Box2DSpringSimulation {
         return this.friction;
     }
 
-    public void setFriction(double friction) {
+    public final void setFriction(double friction) {
         this.friction = friction;
     }
 
@@ -157,7 +157,7 @@ public class Box2DSpringSimulation {
      *
      * @param dt time step in seconds.
      */
-    public void setTimeStep(double dt) {
+    public final void setTimeStep(double dt) {
         timeStep = (long) (dt * 1e9);
     }
 
