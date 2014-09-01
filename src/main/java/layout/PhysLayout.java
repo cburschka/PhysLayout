@@ -21,14 +21,14 @@ public class PhysLayout {
     public final Set<ForceField> fields;
 
     private final Map<UnorderedPair<Node>, Spring> connections;
-    private final Map<Node, Map<Node, Spring>> connectionsTo;
+    private final Map<Node, Set<Node>> neighbors;
     private final Map<Node, Double> mass;
 
     public PhysLayout(Pane root) {
         this.root = root;
         nodes = new ReadOnlySetWrapper<>(FXCollections.observableSet());
         connections = new HashMap<>();
-        connectionsTo = new HashMap<>();
+        neighbors = new HashMap<>();
         mass = new HashMap<>();
         fields = new HashSet<>();
     }
@@ -56,41 +56,38 @@ public class PhysLayout {
         nodes.add(a);
         nodes.add(b);
         this.connections.put(new UnorderedPair(a, b), s);
-        Map m = this.connectionsTo.get(a);
-        Map n = this.connectionsTo.get(b);
-        if (m == null) {
-            m = new HashMap<>();
-            this.connectionsTo.put(a, m);
+
+        Set<Node> nA = neighbors.get(a);
+        Set<Node> nB = neighbors.get(b);
+        if (nA == null) {
+            nA = new HashSet<>();
+            neighbors.put(a, nA);
         }
-        if (n == null) {
-            n = new HashMap<>();
-            this.connectionsTo.put(b, n);
+        if (nB == null) {
+            nB = new HashSet<>();
+            neighbors.put(b, nB);
         }
-        this.connectionsTo.get(a).put(b, s);
-        this.connectionsTo.get(b).put(a, s);
+        nA.add(b);
+        nB.add(a);
     }
 
     public void removeConnection(Node a, Node b) {
         if (this.connections.remove(new UnorderedPair(a, b)) != null) {
-            Map m = this.connectionsTo.get(a);
-            Map n = this.connectionsTo.get(b);
-            m.remove(b);
-            n.remove(a);
-            if (m.isEmpty()) {
+            Set<Node> nA = neighbors.get(a);
+            Set<Node> nB = neighbors.get(b);
+            nA.remove(b);
+            nB.remove(a);
+            if (nA.isEmpty()) {
                 nodes.remove(a);
             }
-            if (n.isEmpty()) {
+            if (nB.isEmpty()) {
                 nodes.remove(b);
             }
         }
     }
 
     public Set<Node> getNeighbors(Node a) {
-        Map<Node, Spring> m = this.connectionsTo.get(a);
-        if (m == null) {
-            return null;
-        }
-        return m.keySet();
+        return neighbors.get(a);
     }
 
     public Set<Node> getNodes() {
