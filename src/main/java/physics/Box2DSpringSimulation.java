@@ -105,7 +105,7 @@ public class Box2DSpringSimulation {
 
     public void updateView() {
         bodies.entrySet().stream().forEach((e) -> {
-            Vec2 p = e.getValue().getWorldCenter();
+            Vec2 p = e.getValue().getPosition();
             e.getKey().setLayoutX(p.x);
             e.getKey().setLayoutY(p.y);
         });
@@ -180,8 +180,8 @@ public class Box2DSpringSimulation {
      * @param spring
      */
     private void applySpring(Body a, Body b, Spring spring) {
-        Vec2 pA = a.getWorldCenter();
-        Vec2 pB = b.getWorldCenter();
+        Vec2 pA = a.getPosition();
+        Vec2 pB = b.getPosition();
         Vec2 force = spring.getForce(pA, pB);
         a.applyForceToCenter(force);
         b.applyForceToCenter(force.negate());
@@ -199,7 +199,7 @@ public class Box2DSpringSimulation {
         bodies.values().stream().forEach((a) -> {
             applyFriction(a);
             layout.fields.stream().forEach((field) -> {
-                a.applyForceToCenter(field.force(a.getWorldCenter()));
+                a.applyForceToCenter(field.force(a.getPosition()));
             });
         });
     }
