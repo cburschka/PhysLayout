@@ -42,7 +42,7 @@ public class SpringSimulation {
 
         for (i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
-                connections[i][j] = pane.getConnection(nodes[i], nodes[j]);
+                //connections[i][j] = pane.getConnection(nodes[i], nodes[j]);
             }
             mass[i] = pane.getMass(nodes[i]);
             start[4 * i] = nodes[i].getLayoutX();

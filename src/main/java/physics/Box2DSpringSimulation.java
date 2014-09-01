@@ -2,6 +2,7 @@ package physics;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import javafx.animation.AnimationTimer;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanWrapper;
@@ -175,12 +176,17 @@ public class Box2DSpringSimulation {
      * @param b
      * @param spring
      */
-    private void applySpring(Body a, Body b, Spring spring) {
+    private void applySprings(Body a, Body b, Set<Spring> springs) {
         Vec2 pA = a.getPosition();
         Vec2 pB = b.getPosition();
-        Vec2 force = spring.getForce(pA, pB);
+
+        Vec2 force = springs.stream().map((s) -> {
+            return s.getForce(pA, pB);
+        }).reduce(new Vec2(), (x, y) -> {
+            return x.add(y);
+        });
+
         a.applyForceToCenter(force);
-        b.applyForceToCenter(force.negate());
     }
 
     private void applyFriction(Body a) {
@@ -190,7 +196,10 @@ public class Box2DSpringSimulation {
 
     private void applyAllForces() {
         layout.getAllConnections().stream().forEach((e) -> {
-            applySpring(bodies.get(e.getKey().getA()), bodies.get(e.getKey().getB()), e.getValue());
+            Node a = e.getKey().getKey();
+            Node b = e.getKey().getValue();
+            Set<Spring> s = e.getValue();
+            applySprings(bodies.get(a), bodies.get(b), s);
         });
         bodies.values().stream().forEach((a) -> {
             applyFriction(a);
