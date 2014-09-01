@@ -62,9 +62,9 @@ public class PhysLayout {
         nodes.remove(a);
         Set<Node> nA = neighbors.get(a);
         if (nA != null) {
-            for (Node b : nA) {
+            nA.stream().forEach((b) -> {
                 clearConnections(a, b);
-            }
+            });
         }
     }
 
