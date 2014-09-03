@@ -10,7 +10,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javafx.beans.property.ReadOnlySetWrapper;
 import javafx.collections.FXCollections;
-import javafx.collections.SetChangeListener;
+import javafx.collections.ObservableSet;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import javafx.util.Pair;
@@ -131,16 +131,12 @@ public class PhysLayout {
         return neighbors.get(a);
     }
 
-    public Set<Node> getNodes() {
+    public ObservableSet<Node> getNodes() {
         return nodes.getReadOnlyProperty();
     }
 
     public Set<Entry<Pair<Node, Node>, Set<Spring>>> getAllConnections() {
         return connections.entrySet();
-    }
-
-    public void addNodeListener(SetChangeListener<? super Node> listener) {
-        nodes.addListener(listener);
     }
 
     public void addField(ForceField... field) {

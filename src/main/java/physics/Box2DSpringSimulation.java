@@ -44,7 +44,7 @@ public class Box2DSpringSimulation {
             createBody(node);
         });
 
-        layout.addNodeListener((SetChangeListener.Change<? extends Node> change) -> {
+        layout.getNodes().addListener((SetChangeListener.Change<? extends Node> change) -> {
             if (change.wasAdded()) {
                 createBody(change.getElementAdded());
             }
