@@ -26,6 +26,7 @@ public abstract class Example extends Application {
     Pane canvas;
     BorderPane root;
     ToolBar menu;
+    Stage primaryStage;
 
     public Example() {
         root = new BorderPane();
@@ -35,8 +36,8 @@ public abstract class Example extends Application {
         simulation = new Box2DSpringSimulation(layout);
         root.setCenter(canvas);
         root.setTop(menu);
-        Button startStop = new Button("Start"), step = new Button("Step"), reset = new Button("Reset");
-        menu.getItems().addAll(startStop, step, reset);
+        Button startStop = new Button("Start"), step = new Button("Step"), reset = new Button("Reset"), exit = new Button("Exit");
+        menu.getItems().addAll(startStop, step, reset, exit);
         simulation.getRunning().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             startStop.setText(newValue ? "Stop" : "Start");
         });
@@ -58,6 +59,10 @@ public abstract class Example extends Application {
         step.disableProperty().bind(simulation.getRunning());
 
         bindResetButton(reset);
+
+        exit.setOnAction((event) -> {
+            primaryStage.close();
+        });
     }
 
     private void bindResetButton(Button reset) {
@@ -70,6 +75,7 @@ public abstract class Example extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         reset();
+        this.primaryStage = primaryStage;
         Scene scene = new Scene(root, WIDTH, HEIGHT);
         primaryStage.setScene(scene);
         primaryStage.setTitle(getTitle());
