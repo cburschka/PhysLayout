@@ -30,7 +30,7 @@ public class Box2DSpringSimulation {
     private final World world;
     private double friction = 0.5;
     private AnimationTimer animation;
-    private long timeStep = (long) 5e5, timeStamp = 0;
+    private long timeStep = (long) 1e6, timeStamp = 0;
     private static final int ITER_VELOCITY = 6, ITER_POS = 3;
     private final ReadOnlyBooleanWrapper running = new ReadOnlyBooleanWrapper(false);
 
@@ -159,14 +159,13 @@ public class Box2DSpringSimulation {
                 long nextTimeStamp = timeStamp + timeStep;
 
                 // Simulate in dt-sized steps until caught up.
+                updateModel(now - timeStamp);
                 while (nextTimeStamp < now) {
-                    updateModel(now - timeStamp);
                     step();
-                    updateView();
-
                     timeStamp = nextTimeStamp;
                     nextTimeStamp = timeStamp + timeStep;
                 }
+                updateView();
             }
         };
     }
