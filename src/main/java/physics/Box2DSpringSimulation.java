@@ -89,19 +89,47 @@ public class Box2DSpringSimulation {
         world.step((float) (timeStep * 1e-9), ITER_VELOCITY, ITER_POS);
     }
 
-    public void updateModel() {
+    /**
+     * Update object positions based on their JavaFX nodes.
+     *
+     * For elements that have been moved and released by the mouse, their
+     * movement during the last simulated timestep becomes their new momentum,
+     * if the simulation is running.
+     *
+     * This allows "throwing" an element with the mouse.
+     *
+     * @param timeInterval nanoseconds since the last timestep. if set to 0,
+     * all displaced elements will lose their momentum.
+     */
+    public void updateModel(long timeInterval) {
         bodies.entrySet().stream().forEach((e) -> {
-            Vec2 relative = new Vec2((float) e.getKey().getLayoutX(), (float) e.getKey().getLayoutY());
-            relative.subLocal(e.getValue().getPosition());
+            Node node = e.getKey();
+            Body body = e.getValue();
+            Vec2 relative = new Vec2((float) node.getLayoutX(), (float) node.getLayoutY());
+            relative.subLocal(body.getPosition());
 
             // If the node has been moved externally or pressed, update.
-            if (relative.length() > 0 || e.getKey().isPressed()) {
-                Vec2 p = e.getValue().getTransform().p;
-                e.getValue().setTransform(p.add(relative), e.getValue().getAngle());
-                // Reset its momentum, since the user is "holding" it.
-                e.getValue().setLinearVelocity(new Vec2());
+            if (relative.length() > 0) {
+                Vec2 p = body.getTransform().p;
+                body.setTransform(p.add(relative), body.getAngle());
+                // Use last timestep to set momentum.
+                if (isRunning() && timeInterval > 0 && !node.isPressed()) {
+                    body.setLinearVelocity(relative.mul((float) (1e9 / timeInterval)));
+                } else {
+                    body.setLinearVelocity(new Vec2());
+                }
+            } // Elements must not move while they are held with the mouse.
+            else if (node.isPressed()) {
+                body.setLinearVelocity(new Vec2());
             }
         });
+    }
+
+    /**
+     * Update positions without setting velocities.
+     */
+    public void updateModel() {
+        updateModel(0);
     }
 
     public void updateView() {
@@ -120,7 +148,7 @@ public class Box2DSpringSimulation {
 
                 // Simulate in dt-sized steps until caught up.
                 while (nextTimeStamp < now) {
-                    updateModel();
+                    updateModel(now - timeStamp);
                     step();
                     updateView();
 
@@ -132,6 +160,7 @@ public class Box2DSpringSimulation {
     }
 
     public void startSimulation() {
+        updateModel();
         running.set(true);
         timeStamp = System.nanoTime();
         animation.start();
