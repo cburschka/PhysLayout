@@ -50,6 +50,9 @@ public class Spring {
     /**
      * Calculate the spring's currently exerted force.
      *
+     * If the spring is infinitely compressed, the direction of the force is
+     * undefined. The return value will be a zero vector.
+     *
      * @param a the first point
      * @param b the second point
      * @return the force acting on the first point (flip sign for second)
@@ -57,7 +60,7 @@ public class Spring {
     public Point2D getForce(Point2D a, Point2D b) {
         Point2D relative = b.add(this.b).subtract(a.add(this.a));
         double distance = relative.magnitude();
-        return relative.multiply(getForce(distance) / distance);
+        return distance > 0 ? relative.multiply(getForce(distance) / distance) : Point2D.ZERO;
     }
 
     public Spring reverse() {
