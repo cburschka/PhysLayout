@@ -110,8 +110,8 @@ public class Box2DSpringSimulation {
      *
      * This allows "throwing" an element with the mouse.
      *
-     * @param timeInterval nanoseconds since the last timestep. if set to 0,
-     * all displaced elements will lose their momentum.
+     * @param timeInterval nanoseconds since the last timestep. if set to 0, all
+     * displaced elements will lose their momentum.
      */
     public void updateModel(long timeInterval) {
         bodies.entrySet().stream().forEach((e) -> {
