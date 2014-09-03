@@ -29,9 +29,8 @@ public class Throwing extends Example {
         canvas.getChildren().add(line);
         canvas.getChildren().add(anchor);
         canvas.getChildren().add(ball);
-        layout.addNode(ball);
-        layout.setMass(anchor, Double.POSITIVE_INFINITY);
         layout.addConnection(ball, anchor, new Spring(0, 10));
+        layout.setMass(anchor, Double.POSITIVE_INFINITY);
         MouseControlUtil.makeDraggable(ball);
         simulation.setFriction(0);
     }

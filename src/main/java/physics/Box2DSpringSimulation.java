@@ -6,6 +6,7 @@ import java.util.Set;
 import javafx.animation.AnimationTimer;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanWrapper;
+import javafx.collections.MapChangeListener;
 import javafx.collections.SetChangeListener;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
@@ -51,6 +52,17 @@ public class Box2DSpringSimulation {
             if (change.wasRemoved()) {
                 world.destroyBody(bodies.get(change.getElementRemoved()));
                 bodies.remove(change.getElementRemoved());
+            }
+        });
+
+        layout.getMasses().addListener((MapChangeListener.Change<? extends Node, ? extends Double> change) -> {
+            Body body = bodies.get(change.getKey());
+            if (body != null) {
+                if (change.wasAdded() && change.getValueAdded().isInfinite()) {
+                    body.setType(BodyType.STATIC);
+                } else if (change.wasRemoved() && change.getValueRemoved().isInfinite()) {
+                    body.setType(BodyType.DYNAMIC);
+                }
             }
         });
 

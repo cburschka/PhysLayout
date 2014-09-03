@@ -8,8 +8,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javafx.beans.property.ReadOnlyMapWrapper;
 import javafx.beans.property.ReadOnlySetWrapper;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableMap;
 import javafx.collections.ObservableSet;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
@@ -21,18 +23,17 @@ public class PhysLayout {
 
     private final Pane root;
     private final ReadOnlySetWrapper<Node> nodes;
+    private final ReadOnlyMapWrapper<Node, Double> masses;
     private final Set<ForceField> fields;
-
     private final Map<Pair<Node, Node>, Set<Spring>> connections;
     private final Map<Node, Set<Node>> neighbors;
-    private final Map<Node, Double> mass;
 
     public PhysLayout(Pane root) {
         this.root = root;
         nodes = new ReadOnlySetWrapper<>(FXCollections.observableSet());
         connections = new HashMap<>();
         neighbors = new HashMap<>();
-        mass = new HashMap<>();
+        masses = new ReadOnlyMapWrapper(FXCollections.observableMap(new HashMap<>()));
         fields = new HashSet<>();
     }
 
@@ -49,11 +50,15 @@ public class PhysLayout {
      */
     public void setMass(Node a, double m) {
         addNode(a);
-        mass.put(a, m);
+        masses.put(a, m);
     }
 
     public double getMass(Node a) {
-        return mass.getOrDefault(a, 1.0);
+        return masses.getOrDefault(a, 1.0);
+    }
+
+    public ObservableMap<Node, Double> getMasses() {
+        return masses.getReadOnlyProperty();
     }
 
     public void addNode(Node a) {
@@ -62,7 +67,7 @@ public class PhysLayout {
 
     public void removeNode(Node a) {
         nodes.remove(a);
-        mass.remove(a);
+        masses.remove(a);
         Set<Node> nA = neighbors.get(a);
         if (nA != null) {
             nA.stream().forEach((b) -> {

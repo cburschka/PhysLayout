@@ -34,8 +34,6 @@ public class Main extends Example {
         anchor.setRadius(NODE_SIZE);
         canvas.getChildren().add(anchor);
         MouseControlUtil.makeDraggable(anchor);
-        // This part stays put.
-        layout.setMass(anchor, Double.POSITIVE_INFINITY);
 
         double radius = Math.min(WIDTH, HEIGHT) / 3;
         Spring radial = new Spring(radius, 10);
@@ -71,6 +69,9 @@ public class Main extends Example {
                 layout.addConnection(circles[i], circles[(i + j) % NODE_COUNT], new Spring(2 * radius * Math.sin(j * Math.PI / NODE_COUNT), 10));
             }
         }
+
+        // This part stays put.
+        layout.setMass(anchor, Double.POSITIVE_INFINITY);
 
         ((Button) menu.getItems().get(2)).setText("Randomize");
     }
