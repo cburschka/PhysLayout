@@ -48,6 +48,7 @@ public class PhysLayout {
      * @param m
      */
     public void setMass(Node a, double m) {
+        addNode(a);
         mass.put(a, m);
     }
 
@@ -61,6 +62,7 @@ public class PhysLayout {
 
     public void removeNode(Node a) {
         nodes.remove(a);
+        mass.remove(a);
         Set<Node> nA = neighbors.get(a);
         if (nA != null) {
             nA.stream().forEach((b) -> {
