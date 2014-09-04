@@ -1,7 +1,6 @@
 package physics;
 
 import javafx.geometry.Bounds;
-import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import org.jbox2d.collision.AABB;
 import org.jbox2d.collision.RayCastInput;
@@ -43,7 +42,7 @@ public class NodeShape extends Shape {
         tempy = p.y - xf.p.y;
         final float pLocalx = xfq.c * tempx + xfq.s * tempy;
         final float pLocaly = -xfq.s * tempx + xfq.c * tempy;
-        return node.contains(new Point2D(pLocalx, pLocaly));
+        return node.contains(pLocalx, pLocaly);
     }
 
     @Override
