@@ -1,4 +1,4 @@
-package physics;
+package physics.shapes;
 
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
@@ -16,13 +16,12 @@ import org.jbox2d.common.Vec2;
  *
  * @author Christoph Burschka &lt;christoph@burschka.de&gt;
  */
-public class NodeShape extends Shape {
+public class UnknownNodeShape extends Shape {
 
     private final Node node;
-    private float mass;
 
-    public NodeShape(Node node, double mass) {
-        super(ShapeType.POLYGON);
+    public UnknownNodeShape(ShapeType type, Node node) {
+        super(type);
         this.node = node;
     }
 
@@ -46,22 +45,15 @@ public class NodeShape extends Shape {
     }
 
     @Override
-    // @TODO: How?
     public boolean raycast(RayCastOutput output, RayCastInput input, Transform transform, int childIndex) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public void computeAABB(AABB aabb, Transform xf, int childIndex) {
-        final Vec2 lower = aabb.lowerBound;
-        final Vec2 upper = aabb.upperBound;
-        float x1, x2, y1, y2;
-
-        // @TODO: Figure out if we can somehow box *after* applying our
-        // transform, instead of transforming the box.
-        // The node seems to only allow applying its own transformation.
-        // This box will almost certainly be too big.
         Bounds b = node.getBoundsInLocal();
+        final Vec2 lower = aabb.lowerBound, upper = aabb.upperBound;
+        final float x1, y1, x2, y2, x3, y3, x4, y4;
 
         // Box it,
         x1 = (float) b.getMinX();
@@ -70,10 +62,16 @@ public class NodeShape extends Shape {
         y2 = (float) b.getMaxY();
 
         // Spin it,
-        lower.x = x1 * xf.q.c + y1 * xf.q.s;
-        lower.y = y1 * xf.q.c + x1 * xf.q.s;
-        upper.x = x2 * xf.q.c + y2 * xf.q.s;
-        lower.y = y2 * xf.q.c + x2 * xf.q.s;
+        x3 = x1 * xf.q.c + y1 * xf.q.s;
+        y3 = y1 * xf.q.c + x1 * xf.q.s;
+        x4 = x2 * xf.q.c + y2 * xf.q.s;
+        y4 = y2 * xf.q.c + x2 * xf.q.s;
+
+        // Rebox it,
+        lower.x = Math.min(x3, x4);
+        lower.y = Math.min(y3, y4);
+        upper.x = Math.max(x3, x4);
+        upper.y = Math.max(y3, y4);
 
         // Move it.
         lower.x += xf.p.x;
@@ -84,13 +82,11 @@ public class NodeShape extends Shape {
 
     @Override
     public void computeMass(MassData massData, float density) {
-        // @TODO: How?!
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public Shape clone() {
-        return new NodeShape(node, mass);
+        return new UnknownNodeShape(m_type, node);
     }
-
 }

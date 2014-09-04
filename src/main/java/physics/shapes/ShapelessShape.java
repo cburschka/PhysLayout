@@ -1,4 +1,4 @@
-package physics;
+package physics.shapes;
 
 import org.jbox2d.collision.AABB;
 import org.jbox2d.collision.RayCastInput;
