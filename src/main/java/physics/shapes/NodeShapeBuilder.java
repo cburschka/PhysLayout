@@ -4,7 +4,6 @@ import javafx.scene.Node;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
 import org.jbox2d.collision.shapes.Shape;
-import org.jbox2d.collision.shapes.ShapeType;
 
 /**
  * Creating JBox2D shapes for JavaFX nodes.
@@ -27,6 +26,6 @@ public class NodeShapeBuilder {
         if (node instanceof Polygon) {
             return new NodePolygonShape((Polygon) node);
         }
-        return new UnknownNodeShape(ShapeType.CIRCLE, node);
+        return new NodeBoxShape(node);
     }
 }
