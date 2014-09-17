@@ -8,17 +8,19 @@ import jfxtras.labs.util.event.MouseControlUtil;
 import physics.Spring;
 
 /**
+ * These are several nodes connected in a great circle. They will rapidly
+ * converge into a circle formation from random initial positions.
  *
  * @author Christoph Burschka &lt;christoph@burschka.de&gt;
  */
-public class Main extends Example {
+public class Wheel extends Example {
 
     private static final int NODE_COUNT = 25;
     private static final int NODE_SIZE = 10;
     private final Circle[] circles;
     private final Circle anchor;
 
-    public Main() {
+    public Wheel() {
         circles = new Circle[NODE_COUNT];
         for (int i = 0; i < NODE_COUNT; i++) {
             circles[i] = new Circle();

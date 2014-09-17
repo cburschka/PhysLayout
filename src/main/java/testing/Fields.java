@@ -7,6 +7,9 @@ import jfxtras.labs.util.event.MouseControlUtil;
 import physics.PointForceField;
 
 /**
+ * There are four circular force-fields in this simulation that pull on a single
+ * ball. Whenever the ball approaches one of them, it will be drawn into a fixed
+ * position.
  *
  * @author Christoph Burschka &lt;christoph@burschka.de&gt;
  */

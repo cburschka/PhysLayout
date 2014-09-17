@@ -7,6 +7,10 @@ import jfxtras.labs.util.event.MouseControlUtil;
 import physics.Spring;
 
 /**
+ * This example has a central anchor and a spring pendulum that can freely move
+ * around it.
+ * Using click-and-drag movement, the pendulum can be thrown into an elliptical orbit
+ * around the anchor.
  *
  * @author Christoph Burschka &lt;christoph@burschka.de&gt;
  */

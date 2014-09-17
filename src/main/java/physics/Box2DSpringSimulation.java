@@ -35,6 +35,11 @@ public class Box2DSpringSimulation {
     private static final int ITER_VELOCITY = 6, ITER_POS = 3;
     private final ReadOnlyBooleanWrapper running = new ReadOnlyBooleanWrapper(false);
 
+    /**
+     * Create a new simulation for a particular layout.
+     *
+     * @param layout
+     */
     public Box2DSpringSimulation(PhysLayout layout) {
         this.layout = layout;
         bodies = new HashMap<>();
@@ -70,6 +75,14 @@ public class Box2DSpringSimulation {
         this.createAnimation();
     }
 
+    /**
+     * Create a new simulation while also setting custom values for the time
+     * step and friction.
+     *
+     * @param layout
+     * @param dt
+     * @param friction
+     */
     public Box2DSpringSimulation(PhysLayout layout, double dt, double friction) {
         this(layout);
         setTimeStep(dt);
@@ -87,14 +100,29 @@ public class Box2DSpringSimulation {
         bodies.put(node, body);
     }
 
-    public double getFriction(double friction) {
+    /**
+     * Get the current friction value.
+     *
+     * @return the friction, as the proportion of velocity and opposing force.
+     */
+    public double getFriction() {
         return this.friction;
     }
 
+    /**
+     * Set the friction value.
+     *
+     * @param friction the friction, as the proportion of velocity and opposing
+     * force.
+     */
     public final void setFriction(double friction) {
         this.friction = friction;
     }
 
+    /**
+     * Execute one simulated time step, according to the current time step
+     * length.
+     */
     public void step() {
         // Box2D physics work by applying a fixed force on every timestep.
         applyAllForces();
@@ -139,12 +167,18 @@ public class Box2DSpringSimulation {
     }
 
     /**
-     * Update positions without setting velocities.
+     * Update object positions based on their JavaFX nodes.
+     *
+     * The momentum of displaced objects is set to 0. This method should be used
+     * to update the simulation model while the simulation is not running.
      */
     public void updateModel() {
         updateModel(0);
     }
 
+    /**
+     * Relocate the JavaFX nodes according to their simulated movement.
+     */
     public void updateView() {
         bodies.entrySet().stream().forEach((e) -> {
             Vec2 p = e.getValue().getPosition();
@@ -171,6 +205,9 @@ public class Box2DSpringSimulation {
         };
     }
 
+    /**
+     * Start simulating.
+     */
     public void startSimulation() {
         updateModel();
         running.set(true);
@@ -178,15 +215,30 @@ public class Box2DSpringSimulation {
         animation.start();
     }
 
+    /**
+     * Stop the simulation in progress.
+     */
     public void stopSimulation() {
         running.set(false);
         animation.stop();
     }
 
+    /**
+     * Check whether the simulation is currently running.
+     *
+     * @return true if the simulation is running.
+     */
     public boolean isRunning() {
         return running.get();
     }
 
+    /**
+     * Observable boolean value that allows modules to respond to the simulation
+     * being started or stopped.
+     *
+     * @return a read-only observable boolean value that is true when the
+     * simulation is running.
+     */
     public ReadOnlyBooleanProperty getRunning() {
         return running.getReadOnlyProperty();
     }
@@ -212,11 +264,11 @@ public class Box2DSpringSimulation {
     }
 
     /**
-     * Applies spring force between a and b.
+     * Applies a spring force to one endpoint of spring set.
      *
-     * @param a
-     * @param b
-     * @param spring
+     * @param a the target of the force
+     * @param b the other endpoint of the spring set.
+     * @param springs the springs between the two bodies.
      */
     private void applySprings(Body a, Body b, Set<Spring> springs) {
         Point2D pA = point(a.getPosition());
@@ -231,6 +283,11 @@ public class Box2DSpringSimulation {
         a.applyForceToCenter(vec(force));
     }
 
+    /**
+     * Apply an opposing force in proportion to the velocity of a body.
+     *
+     * @param a
+     */
     private void applyFriction(Body a) {
         Vec2 v = a.getLinearVelocity();
         a.applyForceToCenter(v.mul((float) -friction));

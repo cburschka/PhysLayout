@@ -13,6 +13,9 @@ import layout.PhysLayout;
 import physics.Box2DSpringSimulation;
 
 /**
+ * An abstract template for example applications. This class creates the basic
+ * prerequisites (layout and simulation) along with a GUI to start, stop and
+ * reset the simulation.
  *
  * @author Christoph Burschka &lt;christoph@burschka.de&gt;
  */
@@ -27,8 +30,11 @@ public abstract class Example extends Application {
     BorderPane root;
     ToolBar menu;
     Stage primaryStage;
-    private Button reset;
+    private final Button reset;
 
+    /**
+     * Super-constructor for all examples.
+     */
     public Example() {
         root = new BorderPane();
         menu = new ToolBar();
@@ -66,8 +72,14 @@ public abstract class Example extends Application {
         });
     }
 
+    /**
+     * Sets up the application. This is called internally; the proper method to
+     * start the application is launch().
+     *
+     * @param primaryStage
+     */
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage primaryStage) {
         reset.setOnAction((ActionEvent event) -> {
             simulation.stopSimulation();
             reset();
@@ -81,7 +93,15 @@ public abstract class Example extends Application {
         primaryStage.show();
     }
 
+    /**
+     * Reset the simulation. This is called once during the setup, and whenever
+     * the reset button is pressed.
+     */
     public abstract void reset();
 
+    /**
+     * Get the window title.
+     * @return the string that the title will be set to.
+     */
     public abstract String getTitle();
 }

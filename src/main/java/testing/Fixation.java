@@ -12,6 +12,10 @@ import jfxtras.labs.util.event.MouseControlUtil;
 import physics.Spring;
 
 /**
+ * This example anchors one node to another with many springs attached to it at
+ * different points.
+ * As a result, the two nodes will not only maintain a particular distance, but
+ * also a particular relative angle.
  *
  * @author Christoph Burschka &lt;christoph@burschka.de&gt;
  */
