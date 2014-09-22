@@ -134,6 +134,14 @@ public class PhysLayout {
         }
     }
 
+    public void clearAllConnections() {
+        connections.clear();
+    }
+
+    public void clearAllMasses() {
+        masses.clear();
+    }
+
     public Set<Node> getNeighbors(Node a) {
         return neighbors.get(a);
     }
