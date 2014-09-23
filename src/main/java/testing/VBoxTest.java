@@ -60,7 +60,7 @@ public class VBoxTest extends Application {
         primaryStage.setScene(scene);
         primaryStage.setTitle("VBox Test");
         primaryStage.show();
-        //mgr.start();
+        mgr.start();
     }
 
     public static void main(String[] args) {

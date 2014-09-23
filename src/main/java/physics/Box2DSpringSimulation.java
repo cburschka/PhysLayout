@@ -157,7 +157,8 @@ public class Box2DSpringSimulation {
         bodies.entrySet().stream().forEach((e) -> {
             Node node = e.getKey();
             Body body = e.getValue();
-            Vec2 relative = new Vec2((float) node.getLayoutX(), (float) node.getLayoutY());
+            Vec2 relative = new Vec2((float) node.getLayoutX(), (float) node.getLayoutY())
+                    .add(new Vec2((float) node.getTranslateX(), (float) node.getTranslateY()));
             relative.subLocal(body.getPosition());
 
             // If the node has been moved externally or pressed, update.
@@ -192,9 +193,10 @@ public class Box2DSpringSimulation {
      */
     public void updateView() {
         bodies.entrySet().stream().forEach((e) -> {
-            Vec2 p = e.getValue().getPosition();
-            e.getKey().setLayoutX(p.x);
-            e.getKey().setLayoutY(p.y);
+            Vec2 p = e.getValue().getPosition()
+                    .sub(new Vec2((float) e.getKey().getLayoutX(), (float) e.getKey().getLayoutY()));
+            e.getKey().setTranslateX(p.x);
+            e.getKey().setTranslateY(p.y);
         });
     }
 
