@@ -1,6 +1,5 @@
 package physics;
 
-import physics.shapes.ShapelessShape;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -12,11 +11,14 @@ import javafx.collections.SetChangeListener;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import layout.PhysLayout;
+import org.jbox2d.collision.shapes.MassData;
+import org.jbox2d.collision.shapes.Shape;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.BodyDef;
 import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.World;
+import physics.shapes.NodeShapeBuilder;
 
 /**
  * Manage a JBox2D simulation of multiple JavaFX nodes. Nodes have no collision,
@@ -62,13 +64,16 @@ public class Box2DSpringSimulation {
         });
 
         layout.getMasses().addListener((MapChangeListener.Change<? extends Node, ? extends Double> change) -> {
-            Body body = bodies.get(change.getKey());
+            Node node = change.getKey();
+            Body body = bodies.get(node);
             if (body != null) {
                 if (change.wasAdded() && change.getValueAdded().isInfinite()) {
                     body.setType(BodyType.STATIC);
                 } else if (change.wasRemoved() && change.getValueRemoved().isInfinite()) {
                     body.setType(BodyType.DYNAMIC);
                 }
+                body.destroyFixture(body.getFixtureList());
+                createBodyFixture(node, body);
             }
         });
 
@@ -95,9 +100,15 @@ public class Box2DSpringSimulation {
         // Infinite-mass bodies are immovable.
         def.type = layout.getMass(node) == Double.POSITIVE_INFINITY ? BodyType.STATIC : BodyType.DYNAMIC;
         Body body = world.createBody(def);
-        // Attach an infinitely dense point mass to the body:
-        body.createFixture(new ShapelessShape((layout.getMass(node))), Float.POSITIVE_INFINITY);
+        createBodyFixture(node, body);
         bodies.put(node, body);
+    }
+
+    private void createBodyFixture(Node node, Body body) {
+        Shape s = NodeShapeBuilder.createShape(node);
+        MassData m = new MassData();
+        s.computeMass(m, 1);
+        body.createFixture(s, (float) layout.getMass(node) / m.mass);
     }
 
     /**
