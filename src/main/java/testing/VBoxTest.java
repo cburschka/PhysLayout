@@ -3,12 +3,12 @@ package testing;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
-import layout.PhysLayout;
+import layout.PhysLayoutManager;
 import layout.PhysVBox;
-import physics.Box2DSpringSimulation;
 
 /**
  * An abstract template for example applications. This class creates the basic
@@ -24,9 +24,8 @@ public class VBoxTest extends Application {
     public static final int NODE_COUNT = 5;
     public static final int NODE_SIZE = 5;
 
-    Box2DSpringSimulation simulation;
-    PhysLayout layout;
-    Pane canvas;
+    PhysLayoutManager mgr;
+    VBox canvas;
     Pane root;
     Stage primaryStage;
     private final Circle[] circles;
@@ -41,10 +40,11 @@ public class VBoxTest extends Application {
             circles[i].setFill(Color.hsb(360.0 * i / NODE_COUNT, 1.0, 0.5));
             circles[i].setRadius(NODE_SIZE);
         }
-        canvas = new PhysVBox(60, circles);
+        canvas = new VBox(60, circles);
         root = new Pane(canvas);
         canvas.setLayoutX((WIDTH / 2));
         canvas.setLayoutY((HEIGHT / 2));
+        mgr = new PhysVBox(canvas);
     }
 
     /**
@@ -60,6 +60,7 @@ public class VBoxTest extends Application {
         primaryStage.setScene(scene);
         primaryStage.setTitle("VBox Test");
         primaryStage.show();
+        //mgr.start();
     }
 
     public static void main(String[] args) {

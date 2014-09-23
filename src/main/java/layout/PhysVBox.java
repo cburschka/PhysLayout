@@ -1,85 +1,46 @@
 package layout;
 
-import javafx.collections.ListChangeListener;
+import java.util.List;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.layout.VBox;
-import jfxtras.labs.util.event.MouseControlUtil;
-import physics.Box2DSpringSimulation;
 import physics.Spring;
 
 /**
  *
  * @author Christoph Burschka &lt;christoph@burschka.de&gt;
  */
-public class PhysVBox extends VBox {
+public class PhysVBox extends PhysLayoutManager {
 
-    private final PhysLayout layout;
-    private final Box2DSpringSimulation simulation;
-    private final double strength = 1.0f;
+    private final VBox root;
+    private final double strength = 1.0;
 
-    public PhysVBox() {
-        layout = new PhysLayout(this);
-        simulation = new Box2DSpringSimulation(layout);
-        initialize();
+    public PhysVBox(VBox root) {
+        super(root);
+        this.root = root;
     }
 
-    public PhysVBox(Node... children) {
-        super(children);
-        layout = new PhysLayout(this);
-        simulation = new Box2DSpringSimulation(layout);
-        initialize();
-    }
-
-    public PhysVBox(double spacing) {
-        super(spacing);
-        layout = new PhysLayout(this);
-        simulation = new Box2DSpringSimulation(layout);
-        initialize();
-    }
-
-    public PhysVBox(double spacing, Node... children) {
-        super(spacing, children);
-        layout = new PhysLayout(this);
-        simulation = new Box2DSpringSimulation(layout);
-        initialize();
-    }
-
-    private void initialize() {
-        getChildren().stream().forEach((child) -> {
-            //MouseControlUtil.makeDraggable(child);
-        });
-
-        getChildren().addListener((ListChangeListener.Change<? extends Node> e) -> {
-            /*while (e.next()) {
-                if (e.wasAdded()) {
-                    e.getAddedSubList().stream().forEach((child) -> {
-                        // TODO: This replaces other handlers?
-                        MouseControlUtil.makeDraggable(child, null, null);
-                    });
-                }
-                if (e.wasRemoved()) {
-                    // TODO: Remove drag handlers.
-                }
-            }*/
-        });
-
-        //simulation.startSimulation();
-    }
-
-    @Override
-    protected void layoutChildren() {
+    private void reconnect(List<Node> children) {
         layout.clearAllConnections();
         layout.clearAllMasses();
 
         // anchor the first node (TODO: More options)
-        layout.setMass(getChildren().get(0), Double.POSITIVE_INFINITY);
-        super.layoutChildren();
-        getChildren().stream().forEach((a) -> {
-            getChildren().stream().filter((b) -> (a != b)).forEach((b) -> {
+        layout.setMass(children.get(0), Double.POSITIVE_INFINITY);
+        children.stream().forEach((a) -> {
+            children.stream().filter((b) -> (a != b)).forEach((b) -> {
                 Point2D relative = new Point2D(b.getLayoutX() - a.getLayoutX(), b.getLayoutY() - a.getLayoutY());
                 layout.addConnection(a, b, new Spring(relative.magnitude(), strength));
             });
         });
+    }
+
+    @Override
+    protected void childrenAdded(List<Node> added, List<Node> children) {
+        reconnect(children);
+    }
+
+    @Override
+    protected void childrenRemoved(List<Node> removed, List<Node> children) {
+        reconnect(children);
     }
 }
