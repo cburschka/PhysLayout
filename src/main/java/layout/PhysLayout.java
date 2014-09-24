@@ -18,6 +18,7 @@ import javafx.scene.layout.Pane;
 import javafx.util.Pair;
 import physics.ForceField;
 import physics.Spring;
+import physics.Tether;
 
 public class PhysLayout {
 
@@ -26,12 +27,14 @@ public class PhysLayout {
     private final ReadOnlyMapWrapper<Node, Double> masses;
     private final Set<ForceField> fields;
     private final Map<Pair<Node, Node>, Set<Spring>> connections;
+    private final Map<Node, Set<Tether>> tethers;
     private final Map<Node, Set<Node>> neighbors;
 
     public PhysLayout(Pane root) {
         this.root = root;
         nodes = new ReadOnlySetWrapper<>(FXCollections.observableSet());
         connections = new HashMap<>();
+        tethers = new HashMap<>();
         neighbors = new HashMap<>();
         masses = new ReadOnlyMapWrapper(FXCollections.observableMap(new HashMap<>()));
         fields = new HashSet<>();
@@ -123,6 +126,26 @@ public class PhysLayout {
         }
     }
 
+    public void addTether(Node node, Tether... tether) {
+        addNode(node);
+        Set<Tether> t = tethers.get(node);
+        if (t == null) {
+            t = new HashSet<>();
+            tethers.put(node, t);
+        }
+        t.addAll(Arrays.asList(tether));
+    }
+
+    public void removeTether(Node node, Tether tether) {
+        Set<Tether> t = tethers.get(node);
+        if (t != null) {
+            t.remove(tether);
+            if (t.isEmpty()) {
+                clearTethers(node);
+            }
+        }
+    }
+
     public void clearConnections(Node a, Node b) {
         connections.remove(new Pair<>(a, b));
         connections.remove(new Pair<>(b, a));
@@ -136,6 +159,15 @@ public class PhysLayout {
 
     public void clearAllConnections() {
         connections.clear();
+        neighbors.clear();
+    }
+
+    public void clearTethers(Node node) {
+        tethers.remove(node);
+    }
+
+    public void clearAllTethers() {
+        tethers.clear();
     }
 
     public void clearAllMasses() {

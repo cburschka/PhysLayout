@@ -7,8 +7,10 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
+import jfxtras.labs.util.event.MouseControlUtil;
 import layout.PhysLayoutManager;
-import layout.PhysVBox;
+import layout.VBox2;
+import layout.panes.PhysicalVBox;
 
 /**
  * An abstract template for example applications. This class creates the basic
@@ -21,8 +23,8 @@ public class VBoxTest extends Application {
 
     public static final int WIDTH = 1024;
     public static final int HEIGHT = 768;
-    public static final int NODE_COUNT = 2;
-    public static final int NODE_SIZE = 50;
+    public static final int NODE_COUNT = 10;
+    public static final int NODE_SIZE = 10;
 
     PhysLayoutManager mgr;
     VBox canvas;
@@ -40,11 +42,12 @@ public class VBoxTest extends Application {
             circles[i].setFill(Color.hsb(360.0 * i / NODE_COUNT, 1.0, 0.5));
             circles[i].setRadius(NODE_SIZE);
         }
-        canvas = new VBox(60, circles);
-        root = new Pane(canvas);
+        MouseControlUtil.makeDraggable(circles[1]);
+        canvas = new PhysicalVBox(10, circles);
+        root = canvas;
         canvas.setLayoutX((WIDTH / 2));
         canvas.setLayoutY((HEIGHT / 2));
-        mgr = new PhysVBox(canvas);
+
     }
 
     /**
@@ -60,7 +63,6 @@ public class VBoxTest extends Application {
         primaryStage.setScene(scene);
         primaryStage.setTitle("VBox Test");
         primaryStage.show();
-        mgr.start();
     }
 
     public static void main(String[] args) {
