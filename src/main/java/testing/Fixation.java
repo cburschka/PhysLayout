@@ -56,10 +56,10 @@ public class Fixation extends Example {
                     .distance(new Point2D(pendulum.getLayoutX(), pendulum.getLayoutY()).add(b));
             s[i] = new Spring(length, 100, a, b);
             Line line = new Line();
-            line.startXProperty().bind(anchor.layoutXProperty().add(a.getX()));
-            line.startYProperty().bind(anchor.layoutYProperty().add(a.getY()));
-            line.endXProperty().bind(pendulum.layoutXProperty().add(b.getX()));
-            line.endYProperty().bind(pendulum.layoutYProperty().add(b.getY()));
+            line.startXProperty().bind(anchor.layoutXProperty().add(anchor.translateXProperty()).add(a.getX()));
+            line.startYProperty().bind(anchor.layoutYProperty().add(anchor.translateYProperty()).add(a.getY()));
+            line.endXProperty().bind(pendulum.layoutXProperty().add(pendulum.translateXProperty()).add(b.getX()));
+            line.endYProperty().bind(pendulum.layoutYProperty().add(pendulum.translateYProperty()).add(b.getY()));
             lines.add(line);
             canvas.getChildren().add(line);
             line.toBack();

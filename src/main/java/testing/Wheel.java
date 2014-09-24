@@ -45,20 +45,20 @@ public class Wheel extends Example {
             Line line = new Line();
             line.setFill(Color.BLACK);
             line.setStroke(Color.BLACK);
-            line.startXProperty().bind(circles[i].layoutXProperty());
-            line.startYProperty().bind(circles[i].layoutYProperty());
-            line.endXProperty().bind(circles[(i + 1) % NODE_COUNT].layoutXProperty());
-            line.endYProperty().bind(circles[(i + 1) % NODE_COUNT].layoutYProperty());
+            line.startXProperty().bind(circles[i].layoutXProperty().add(circles[i].translateXProperty()));
+            line.startYProperty().bind(circles[i].layoutYProperty().add(circles[i].translateYProperty()));
+            line.endXProperty().bind(circles[(i + 1) % NODE_COUNT].layoutXProperty().add(circles[(i + 1) % NODE_COUNT].translateXProperty()));
+            line.endYProperty().bind(circles[(i + 1) % NODE_COUNT].layoutYProperty().add(circles[(i + 1) % NODE_COUNT].translateYProperty()));
             canvas.getChildren().add(line);
             line.toBack();
 
             line = new Line();
             line.setFill(Color.BLACK);
             line.setStroke(Color.BLACK);
-            line.startXProperty().bind(circles[i].layoutXProperty());
-            line.startYProperty().bind(circles[i].layoutYProperty());
-            line.endXProperty().bind(anchor.layoutXProperty());
-            line.endYProperty().bind(anchor.layoutYProperty());
+            line.startXProperty().bind(circles[i].layoutXProperty().add(circles[i].translateXProperty()));
+            line.startYProperty().bind(circles[i].layoutYProperty().add(circles[i].translateYProperty()));
+            line.endXProperty().bind(anchor.layoutXProperty().add(anchor.translateXProperty()));
+            line.endYProperty().bind(anchor.layoutYProperty().add(anchor.translateYProperty()));
             canvas.getChildren().add(line);
             line.toBack();
 

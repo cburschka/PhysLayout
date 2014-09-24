@@ -23,10 +23,10 @@ public class Throwing extends Example {
         Circle anchor = new Circle(5, Color.BLACK);
         Line line = new Line();
         line.setStroke(Color.BLACK);
-        line.startXProperty().bind(ball.layoutXProperty());
-        line.startYProperty().bind(ball.layoutYProperty());
-        line.endXProperty().bind(anchor.layoutXProperty());
-        line.endYProperty().bind(anchor.layoutYProperty());
+        line.startXProperty().bind(ball.layoutXProperty().add(ball.translateXProperty()));
+        line.startYProperty().bind(ball.layoutYProperty().add(ball.translateYProperty()));
+        line.endXProperty().bind(anchor.layoutXProperty().add(anchor.translateXProperty()));
+        line.endYProperty().bind(anchor.layoutYProperty().add(anchor.translateYProperty()));
         anchor.setLayoutX(WIDTH / 2);
         anchor.setLayoutY(HEIGHT / 2);
 

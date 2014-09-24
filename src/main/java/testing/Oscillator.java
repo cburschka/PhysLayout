@@ -30,10 +30,10 @@ public class Oscillator extends Example {
 
         Line line = new Line();
         line.setStroke(Color.BLACK);
-        line.startXProperty().bind(a.layoutXProperty());
-        line.startYProperty().bind(a.layoutYProperty());
-        line.endXProperty().bind(b.layoutXProperty());
-        line.endYProperty().bind(b.layoutYProperty());
+        line.startXProperty().bind(a.layoutXProperty().add(a.translateXProperty()));
+        line.startYProperty().bind(a.layoutYProperty().add(a.translateYProperty()));
+        line.endXProperty().bind(b.layoutXProperty().add(b.translateXProperty()));
+        line.endYProperty().bind(b.layoutYProperty().add(b.translateYProperty()));
         canvas.getChildren().add(line);
         line.toBack();
 
