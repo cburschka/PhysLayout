@@ -39,8 +39,12 @@ public class VBoxTest extends Application {
             circles[i].setFill(Color.hsb(360.0 * i / NODE_COUNT, 1.0, 0.5));
             circles[i].setRadius(NODE_SIZE);
         }
-        MouseControlUtil.makeDraggable(circles[1]);
+        //MouseControlUtil.makeDraggable(circles[1]);
         canvas = new PhysicalVBox(10, circles);
+        for (Circle circle : circles) {
+            circle.setTranslateX((Math.random()-0.5)*WIDTH);
+            circle.setTranslateY((Math.random()-0.5)*HEIGHT);
+        }
         root = canvas;
         canvas.setLayoutX((WIDTH / 2));
         canvas.setLayoutY((HEIGHT / 2));

@@ -72,11 +72,11 @@ public class PhysicalVBox extends VBox {
         layout.clearAllTethers();
 
         Node first = managedChildren.get(0), last = managedChildren.get(n - 1);
-        layout.addTether(first, new Tether(0, 1, positions[0]));
-        layout.addTether(last, new Tether(0, 1, positions[n - 1]));
+        layout.addTether(first, new Tether(0, 100, positions[0]));
+        layout.addTether(last, new Tether(0, 100, positions[n - 1]));
         for (int i = 0; i < n - 1; i++) {
             double distance = positions[i + 1].distance(positions[i]);
-            layout.addConnection(managedChildren.get(i), managedChildren.get(i + 1), new Spring(distance, 1));
+            layout.addConnection(managedChildren.get(i), managedChildren.get(i + 1), new Spring(distance, 100));
         }
 
         simulation.startSimulation();

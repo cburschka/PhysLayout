@@ -297,6 +297,24 @@ public class Box2DSpringSimulation {
     }
 
     /**
+     * Applies a spring force to a tethered node.
+     *
+     * @param body the target of the force
+     * @param tethers the tethers connected to the node
+     */
+    private void applyTethers(Body body, Set<Tether> tethers) {
+        Point2D p = point(body.getPosition());
+
+        Point2D force = tethers.stream().map((s) -> {
+            return s.getForce(p);
+        }).reduce(new Point2D(0, 0), (x, y) -> {
+            return x.add(y);
+        });
+
+        body.applyForceToCenter(vec(force));
+    }
+
+    /**
      * Apply an opposing force in proportion to the velocity of a body.
      *
      * @param a
@@ -312,6 +330,11 @@ public class Box2DSpringSimulation {
             Node b = e.getKey().getValue();
             Set<Spring> s = e.getValue();
             applySprings(bodies.get(a), bodies.get(b), s);
+        });
+        layout.getAllTethers().stream().forEach((e) -> {
+            Node node = e.getKey();
+            Set<Tether> t = e.getValue();
+            applyTethers(bodies.get(node), t);
         });
         bodies.values().stream().forEach((a) -> {
             applyFriction(a);

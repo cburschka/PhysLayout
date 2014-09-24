@@ -186,6 +186,10 @@ public class PhysLayout {
         return connections.entrySet();
     }
 
+    public Set<Entry<Node, Set<Tether>>> getAllTethers() {
+        return tethers.entrySet();
+    }
+
     public void addField(ForceField... field) {
         fields.addAll(Arrays.asList(field));
     }
@@ -197,4 +201,5 @@ public class PhysLayout {
     public Collection<ForceField> getFields() {
         return fields;
     }
+
 }
