@@ -21,8 +21,8 @@ public class VBoxTest extends Application {
 
     public static final int WIDTH = 1024;
     public static final int HEIGHT = 768;
-    public static final int NODE_COUNT = 5;
-    public static final int NODE_SIZE = 5;
+    public static final int NODE_COUNT = 2;
+    public static final int NODE_SIZE = 50;
 
     PhysLayoutManager mgr;
     VBox canvas;

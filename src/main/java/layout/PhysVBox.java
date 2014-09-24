@@ -25,7 +25,7 @@ public class PhysVBox extends PhysLayoutManager {
         layout.clearAllMasses();
 
         // anchor the first node (TODO: More options)
-        layout.setMass(children.get(0), Double.POSITIVE_INFINITY);
+        //layout.setMass(children.get(0), Double.POSITIVE_INFINITY);
         children.stream().forEach((a) -> {
             children.stream().filter((b) -> (a != b)).forEach((b) -> {
                 Point2D relative = new Point2D(b.getLayoutX() - a.getLayoutX(), b.getLayoutY() - a.getLayoutY());
