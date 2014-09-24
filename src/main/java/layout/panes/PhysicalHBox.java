@@ -61,7 +61,7 @@ public class PhysicalHBox extends HBox {
         // Determine the new positions, and translate the nodes to their old positions.
         for (int i = 0; i < n; i++) {
             Node child = managedChildren.get(i);
-            Point2D newPosition = child.localToParent(Point2D.ZERO);
+            Point2D newPosition = new Point2D(child.getLayoutX(), child.getLayoutY());
             child.setTranslateX(newPosition.getX() - positions[i].getX());
             child.setTranslateY(newPosition.getY() - positions[i].getY());
             positions[i] = newPosition;

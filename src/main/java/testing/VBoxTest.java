@@ -8,8 +8,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import jfxtras.labs.util.event.MouseControlUtil;
-import layout.PhysLayoutManager;
-import layout.VBox2;
 import layout.panes.PhysicalVBox;
 
 /**
@@ -26,7 +24,6 @@ public class VBoxTest extends Application {
     public static final int NODE_COUNT = 10;
     public static final int NODE_SIZE = 10;
 
-    PhysLayoutManager mgr;
     VBox canvas;
     Pane root;
     Stage primaryStage;
