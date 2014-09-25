@@ -58,7 +58,6 @@ public class VBoxTest extends Application {
             circle.setTranslateY((Math.random() - 0.5) * HEIGHT);
         }
         root = canvas;
-        canvas.setFriction(0);
         canvas.setLayoutX((WIDTH / 2));
         canvas.setLayoutY((HEIGHT / 2));
 
