@@ -3,12 +3,10 @@ package testing;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.stage.Stage;
-import jfxtras.labs.util.event.MouseControlUtil;
 import layout.panes.PhysicalVBox;
 
 /**
@@ -22,10 +20,10 @@ public class VBoxTest extends Application {
 
     public static final int WIDTH = 1024;
     public static final int HEIGHT = 768;
-    public static final int NODE_COUNT = 10;
-    public static final int NODE_SIZE = 10;
+    public static final int NODE_COUNT = 2;
+    public static final int NODE_SIZE = 20;
 
-    VBox canvas;
+    PhysicalVBox canvas;
     Pane root;
     Stage primaryStage;
     private final Circle[] circles;
@@ -56,10 +54,11 @@ public class VBoxTest extends Application {
 
         }
         for (Circle circle : circles) {
-            circle.setTranslateX((Math.random()-0.5)*WIDTH);
-            circle.setTranslateY((Math.random()-0.5)*HEIGHT);
+            circle.setTranslateX((Math.random() - 0.5) * WIDTH);
+            circle.setTranslateY((Math.random() - 0.5) * HEIGHT);
         }
         root = canvas;
+        canvas.setFriction(0);
         canvas.setLayoutX((WIDTH / 2));
         canvas.setLayoutY((HEIGHT / 2));
 

@@ -16,29 +16,38 @@ import physics.Tether;
 public class PhysicalVBox extends VBox {
 
     private final PhysLayout layout;
-    private final Box2DSpringSimulation simulation;
+    private double strength = 50;
+    public final Box2DSpringSimulation simulation;
 
     public PhysicalVBox() {
         layout = new PhysLayout(this);
         simulation = new Box2DSpringSimulation(layout);
+        initialize();
     }
 
     public PhysicalVBox(Node... children) {
         super(children);
         layout = new PhysLayout(this);
         simulation = new Box2DSpringSimulation(layout);
+        initialize();
     }
 
     public PhysicalVBox(double spacing) {
         super(spacing);
         layout = new PhysLayout(this);
         simulation = new Box2DSpringSimulation(layout);
+        initialize();
     }
 
     public PhysicalVBox(double spacing, Node... children) {
         super(spacing, children);
         layout = new PhysLayout(this);
         simulation = new Box2DSpringSimulation(layout);
+        initialize();
+    }
+
+    private void initialize() {
+        setFriction(2);
     }
 
     @Override
@@ -72,13 +81,30 @@ public class PhysicalVBox extends VBox {
         layout.clearAllTethers();
 
         for (int i = 0; i < n; i++) {
-            layout.addTether(managedChildren.get(i), new Tether(0, 20, positions[i]));
+            layout.addTether(managedChildren.get(i), new Tether(0, strength, positions[i]));
             for (int j = 0; j < i; j++) {
                 double distance = positions[i].distance(positions[j]);
-                layout.addConnection(managedChildren.get(i), managedChildren.get(j), new Spring(distance, 10));
+                layout.addConnection(managedChildren.get(i), managedChildren.get(j), new Spring(distance, strength));
             }
         }
 
         simulation.startSimulation();
+    }
+
+    public void startSimulation() {
+        simulation.startSimulation();
+    }
+
+    public void stopSimulation() {
+        simulation.stopSimulation();
+    }
+
+    public void setFriction(double friction) {
+        simulation.setFriction(friction);
+    }
+
+    public void setStrength(double strength) {
+        this.strength = strength;
+        this.requestLayout();
     }
 }
