@@ -33,7 +33,7 @@ public class Box2DSpringSimulation {
     private final World world;
     private double friction = 0.5;
     private AnimationTimer animation;
-    private long timeStep = (long) 1e6, timeStamp = 0;
+    private long timeStep = (long) 1e5, timeStamp = 0;
     private static final int ITER_VELOCITY = 6, ITER_POS = 3;
     private final ReadOnlyBooleanWrapper running = new ReadOnlyBooleanWrapper(false);
 
@@ -157,12 +157,12 @@ public class Box2DSpringSimulation {
         bodies.entrySet().stream().forEach((e) -> {
             Node node = e.getKey();
             Body body = e.getValue();
-            Vec2 relative = new Vec2((float) node.getLayoutX(), (float) node.getLayoutY())
-                    .add(new Vec2((float) node.getTranslateX(), (float) node.getTranslateY()));
+            Vec2 relative = new Vec2((float) node.getLayoutX(), (float) node.getLayoutY());
+            relative.addLocal(new Vec2((float) node.getTranslateX(), (float) node.getTranslateY()));
             relative.subLocal(body.getPosition());
 
             // If the node has been moved externally or pressed, update.
-            if (relative.length() > 0) {
+            if (relative.length() > 1e-3) {
                 Vec2 p = body.getTransform().p;
                 body.setTransform(p.add(relative), body.getAngle());
                 // Use last timestep to set momentum.
