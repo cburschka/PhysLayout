@@ -35,7 +35,7 @@ public class Fields extends Example {
         layout.addNode(ball);
         ball.setLayoutX(WIDTH/2);
         ball.setLayoutY(HEIGHT/2);
-        simulation.setFriction(10);
+        getSimulation().setFriction(10);
         MouseControlUtil.makeDraggable(ball);
     }
 

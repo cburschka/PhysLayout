@@ -1,20 +1,9 @@
 package testing;
 
-import javafx.application.Application;
-import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ToolBar;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
-import javafx.stage.Stage;
-import layout.PhysLayout;
 import layout.panes.PhysicalVBox;
-import physics.Box2DSpringSimulation;
 
 /**
  * An abstract template for example applications. This class creates the basic
@@ -23,64 +12,19 @@ import physics.Box2DSpringSimulation;
  *
  * @author Christoph Burschka &lt;christoph@burschka.de&gt;
  */
-public class VBoxExample extends Application {
-
-    public static final int WIDTH = 1024;
-    public static final int HEIGHT = 768;
-    public static final int NODE_COUNT = 5;
-    public static final int NODE_SIZE = 10;
+public class VBoxExample extends Example {
 
     private final Circle[] circles;
-    Box2DSpringSimulation simulation;
-    PhysLayout layout;
-    Pane canvas;
-    BorderPane root;
-    ToolBar menu;
-    Stage primaryStage;
-    private final Button reset;
+    private final static int NODE_COUNT = 5;
+    private final static int NODE_SIZE = 20;
 
     /**
      * Super-constructor for all examples.
      */
     public VBoxExample() {
-        root = new BorderPane();
-        menu = new ToolBar();
-        Pane center = new Pane();
         canvas = new PhysicalVBox(30);
-        ((PhysicalVBox) canvas).setFriction(2);
-        ((PhysicalVBox) canvas).setStrength(20);
-        layout = new PhysLayout(canvas);
-        simulation = ((PhysicalVBox) canvas).simulation;
-        root.setCenter(center);
-        center.getChildren().add(canvas);
-        root.setTop(menu);
 
-        reset = new Button("Reset");
-        Button startStop = new Button("Start"), step = new Button("Step"), exit = new Button("Exit");
-        menu.getItems().addAll(startStop, step, reset, exit);
-        simulation.getRunning().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-            startStop.setText(newValue ? "Stop" : "Start");
-        });
-        startStop.setMinWidth(startStop.getWidth() + 50);
-        startStop.setOnAction((ActionEvent event) -> {
-            if (simulation.isRunning()) {
-                simulation.stopSimulation();
-            } else {
-                simulation.startSimulation();
-            }
-        });
-        step.setOnAction((ActionEvent event) -> {
-            if (!simulation.isRunning()) {
-                simulation.updateModel();
-                simulation.step();
-                simulation.updateView();
-            }
-        });
-        step.disableProperty().bind(simulation.getRunning());
-
-        exit.setOnAction((event) -> {
-            primaryStage.close();
-        });
+        setSimulation(((PhysicalVBox) canvas).simulation);
 
         circles = new Circle[NODE_COUNT];
         for (int i = 0; i < NODE_COUNT; i++) {
@@ -107,40 +51,21 @@ public class VBoxExample extends Application {
             circle.setTranslateX((Math.random() - 0.5) * WIDTH);
             circle.setTranslateY((Math.random() - 0.5) * HEIGHT);
         }
-        simulation = ((PhysicalVBox) canvas).simulation;
+        getSimulation().setFriction(2);
+        ((PhysicalVBox) canvas).setStrength(20);
+
         canvas.setLayoutX((WIDTH / 2));
         canvas.setLayoutY((2 * HEIGHT / 3));
         root.setCenter(canvas);
 
-        root.setTop(menu);
         canvas.toBack();
-    }
-
-    /**
-     * Sets up the application. This is called internally; the proper method to
-     * start the application is launch().
-     *
-     * @param primaryStage
-     */
-    @Override
-    public void start(Stage primaryStage) {
-        reset.setOnAction((ActionEvent event) -> {
-            simulation.stopSimulation();
-            reset();
-        });
-
-        reset();
-        this.primaryStage = primaryStage;
-        Scene scene = new Scene(root, WIDTH, HEIGHT);
-        primaryStage.setScene(scene);
-        primaryStage.setTitle(getTitle());
-        primaryStage.show();
     }
 
     /**
      * Reset the simulation. This is called once during the setup, and whenever
      * the reset button is pressed.
      */
+    @Override
     public void reset() {
         for (Circle circle : circles) {
             circle.setTranslateX((Math.random() - 0.5) * WIDTH);
@@ -153,6 +78,7 @@ public class VBoxExample extends Application {
      *
      * @return the string that the title will be set to.
      */
+    @Override
     public String getTitle() {
         return "VBox";
     }

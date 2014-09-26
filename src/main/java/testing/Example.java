@@ -24,13 +24,13 @@ public abstract class Example extends Application {
     public static final int WIDTH = 1024;
     public static final int HEIGHT = 768;
 
-    Box2DSpringSimulation simulation;
-    PhysLayout layout;
+    private Box2DSpringSimulation simulation;
+    final PhysLayout layout;
     Pane canvas;
     BorderPane root;
     ToolBar menu;
     Stage primaryStage;
-    private final Button reset;
+    private final Button startStop, reset, step;
 
     /**
      * Super-constructor for all examples.
@@ -40,17 +40,40 @@ public abstract class Example extends Application {
         menu = new ToolBar();
         canvas = new Pane();
         layout = new PhysLayout(canvas);
-        simulation = new Box2DSpringSimulation(layout);
         root.setCenter(canvas);
         root.setTop(menu);
 
         reset = new Button("Reset");
-        Button startStop = new Button("Start"), step = new Button("Step"), exit = new Button("Exit");
+        startStop = new Button("Start");
+        step = new Button("Step");
+        Button exit = new Button("Exit");
         menu.getItems().addAll(startStop, step, reset, exit);
+        startStop.setMinWidth(startStop.getWidth() + 50);
+
+        exit.setOnAction((event) -> {
+            primaryStage.close();
+        });
+
+        setSimulation(new Box2DSpringSimulation(layout));
+    }
+
+    protected Box2DSpringSimulation getSimulation() {
+        return simulation;
+    }
+
+    /**
+     * Replace the example applications main simulator. The new simulator will
+     * be attached to the button controls.
+     *
+     * @param simulation
+     */
+    protected final void setSimulation(Box2DSpringSimulation simulation) {
+        this.simulation = simulation;
+
         simulation.getRunning().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             startStop.setText(newValue ? "Stop" : "Start");
         });
-        startStop.setMinWidth(startStop.getWidth() + 50);
+
         startStop.setOnAction((ActionEvent event) -> {
             if (simulation.isRunning()) {
                 simulation.stopSimulation();
@@ -66,10 +89,6 @@ public abstract class Example extends Application {
             }
         });
         step.disableProperty().bind(simulation.getRunning());
-
-        exit.setOnAction((event) -> {
-            primaryStage.close();
-        });
     }
 
     /**
@@ -79,7 +98,7 @@ public abstract class Example extends Application {
      * @param primaryStage
      */
     @Override
-    public void start(Stage primaryStage) {
+    public final void start(Stage primaryStage) {
         reset.setOnAction((ActionEvent event) -> {
             simulation.stopSimulation();
             reset();
@@ -101,6 +120,7 @@ public abstract class Example extends Application {
 
     /**
      * Get the window title.
+     *
      * @return the string that the title will be set to.
      */
     public abstract String getTitle();

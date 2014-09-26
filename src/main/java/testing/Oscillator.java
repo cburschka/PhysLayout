@@ -38,7 +38,7 @@ public class Oscillator extends Example {
         line.toBack();
 
         layout.addConnection(a, b, new Spring(WIDTH / 5, 100));
-        simulation.setFriction(0);
+        getSimulation().setFriction(0);
     }
 
     @Override

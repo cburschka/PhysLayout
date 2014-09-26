@@ -39,7 +39,7 @@ public class Fixation extends Example {
         reconnect.setOnAction((ActionEvent event) -> {
             reconnect();
         });
-        simulation.setFriction(5);
+        getSimulation().setFriction(5);
     }
 
     private void reconnect() {

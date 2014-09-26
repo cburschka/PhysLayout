@@ -36,7 +36,7 @@ public class Throwing extends Example {
         layout.addConnection(ball, anchor, new Spring(0, 10));
         layout.setMass(anchor, Double.POSITIVE_INFINITY);
         MouseControlUtil.makeDraggable(ball);
-        simulation.setFriction(0);
+        getSimulation().setFriction(0);
     }
 
     @Override
