@@ -33,14 +33,16 @@ public class Fields extends Example {
                 new Circle(WIDTH / 4, 3 * HEIGHT / 4, 10, Color.BLUE)
         );
         layout.addNode(ball);
-        simulation.setFriction(1);
+        ball.setLayoutX(WIDTH/2);
+        ball.setLayoutY(HEIGHT/2);
+        simulation.setFriction(10);
         MouseControlUtil.makeDraggable(ball);
     }
 
     @Override
     public void reset() {
-        ball.setLayoutX(WIDTH / 2);
-        ball.setLayoutY(HEIGHT / 2);
+        ball.setTranslateX(0);
+        ball.setTranslateY(0);
     }
 
     @Override
