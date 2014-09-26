@@ -4,6 +4,7 @@ import java.util.List;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ObjectPropertyBase;
 import javafx.collections.ListChangeListener;
+import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import layout.PhysLayout;
@@ -23,6 +24,7 @@ public class WheelPane extends Pane {
     public final Box2DSpringSimulation simulation;
     private double radius;
     private double strength = 10;
+    private double spacing = 0;
 
     public WheelPane() {
         center = new CenterProperty();
@@ -41,23 +43,61 @@ public class WheelPane extends Pane {
         layout.clearAllMasses();
         layout.setMass(c, Double.POSITIVE_INFINITY);
 
-        // TODO: Handle sizes.
-        final List<Node> mc = getManagedChildren();
+        final List<Node> managedChildren = getManagedChildren();
 
         // TODO: Try not to recreate this on each layout pass.
-        final Node[] children = mc.stream().filter(e -> {
+        final Node[] children = getManagedChildren().stream().filter(e -> {
             return e != c;
         }).toArray(size -> {
             return new Node[size];
         });
 
-        for (int _i = 0; _i < children.length; _i++) {
-            for (int j = 1; j < children.length; j++) {
-                // chord length on the unit circle is twice the sine of half the angle:
-                final double chordLength = 2 * radius * Math.sin(j * Math.PI / children.length);
-                layout.addConnection(children[_i], children[(_i + j) % children.length], new Spring(chordLength, strength));
+        double diags[] = new double[children.length];
+        for (int i = 0; i < diags.length; i++) {
+            final Bounds bounds = children[i].getBoundsInLocal();
+            diags[i] = Math.pow(Math.pow(bounds.getHeight(), 2) + Math.pow(bounds.getWidth(), 2), 0.5);
+        }
+
+        /**
+         * Calculate the preferred radius of this wheel. The maximum of the
+         * following three values is taken: - the minimum radius (defaults to 0)
+         * - the circumference required to fit all outside nodes in a circle. -
+         * the diameter required to fit the largest two nodes in line with the
+         * center node.
+         */
+        double m1 = 0, m2 = 0, s = 0;
+        // Find the sum of all diagonals, and the largest two diagonals.
+        for (double diag : diags) {
+            s += diag;
+            if (diag >= m2) {
+                m1 = m2;
+                m2 = diag;
+            } else if (diag > m1) {
+                m1 = diag;
             }
-            layout.addConnection(c, children[_i], new Spring(radius, strength));
+        }
+        final Bounds bounds = c.getBoundsInLocal();
+        final double centerDiag = Math.pow(Math.pow(bounds.getHeight(), 2) + Math.pow(bounds.getWidth(), 2), 0.5);
+        final double diameter = m1 + m2 + centerDiag + 2 * spacing;
+        final double circumference = s + children.length * spacing;
+        final double r = Math.max(radius, Math.max(diameter * 0.5, circumference * 0.5 / Math.PI));
+
+        /**
+         * Connect the children by springs of the appropriate length. Every
+         * (adjacent and non-adjacent) pair of surrounding nodes is connected by
+         * a spring that matches the length of the chord between them.
+         */
+        for (int _i = 0; _i < children.length; _i++) {
+            double d = spacing;
+            for (int j = 1; j < children.length; j++) {
+                // The arc in proportion to the calculated circumference is half the endpoints' sizes plus all the space between them:
+                final double arcSection = (d + (diags[_i] + diags[(_i + j) % children.length]) * 0.5) / circumference;
+                // chord length on the unit circle is twice the sine of half the angle:
+                final double chordLength = 2 * r * Math.sin(arcSection * Math.PI);
+                layout.addConnection(children[_i], children[(_i + j) % children.length], new Spring(chordLength, strength));
+                d += diags[(_i + j) % children.length] + spacing;
+            }
+            layout.addConnection(c, children[_i], new Spring(r, strength));
         }
 
         simulation.startSimulation();
@@ -127,8 +167,14 @@ public class WheelPane extends Pane {
         }
     }
 
-    public void setRadius(double radius) {
+    public void setMinRadius(double radius) {
         this.radius = radius;
         requestLayout();
     }
+
+    public void setSpacing(double spacing) {
+        this.spacing = spacing;
+        requestLayout();
+    }
+
 }

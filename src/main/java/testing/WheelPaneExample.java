@@ -15,7 +15,7 @@ import layout.panes.WheelPane;
 public class WheelPaneExample extends Example {
 
     public static final int NODE_COUNT = 20;
-    public static final int NODE_SIZE = 10;
+    public static final int NODE_SIZE = 5;
 
     private final Circle[] circles;
 
@@ -25,14 +25,14 @@ public class WheelPaneExample extends Example {
     public WheelPaneExample() {
         canvas = new WheelPane();
         setSimulation(((WheelPane) canvas).simulation);
-        ((WheelPane) canvas).setRadius(100);
+        ((WheelPane) canvas).setSpacing(10);
 
         Circle anchor = new Circle(NODE_SIZE, Color.BLACK);
         circles = new Circle[NODE_COUNT];
         for (int i = 0; i < NODE_COUNT; i++) {
             circles[i] = new Circle();
             circles[i].setFill(Color.hsb(360.0 * i / NODE_COUNT, 1.0, 0.5));
-            circles[i].setRadius(NODE_SIZE);
+            circles[i].setRadius(NODE_SIZE * (1 + i * 7.0 / NODE_COUNT));
         }
         canvas.getChildren().addAll(circles);
         ((WheelPane) canvas).setCenter(anchor);
@@ -65,9 +65,8 @@ public class WheelPaneExample extends Example {
             circle.setTranslateX((Math.random() - 0.5) * WIDTH);
             circle.setTranslateY((Math.random() - 0.5) * HEIGHT);
         }
-
         canvas.setLayoutX((WIDTH / 2));
-        canvas.setLayoutY((2 * HEIGHT / 3));
+        canvas.setLayoutY((HEIGHT / 2));
         root.setCenter(canvas);
 
         canvas.toBack();
