@@ -33,8 +33,9 @@ public class Box2DSpringSimulation {
     private final World world;
     private double friction = 0.5;
     private AnimationTimer animation;
-    private long timeStep = (long) 5e6, timeStamp = 0;
+    private long timeStep = (long) 1e6, timeStamp = 0;
     private static final int ITER_VELOCITY = 6, ITER_POS = 3;
+    private static final double DRAG_SPEED = 1.5;
     private final ReadOnlyBooleanWrapper running = new ReadOnlyBooleanWrapper(false);
 
     /**
@@ -167,7 +168,7 @@ public class Box2DSpringSimulation {
                 body.setTransform(p.add(relative), body.getAngle());
                 // Use last timestep to set momentum.
                 if (isRunning() && timeInterval > 0 && !node.isPressed()) {
-                    body.setLinearVelocity(relative.mul((float) (1e9 / timeInterval)));
+                    body.setLinearVelocity(relative.mul((float) (DRAG_SPEED * 1e9 / timeInterval)));
                 } else {
                     body.setLinearVelocity(new Vec2());
                 }
