@@ -32,6 +32,9 @@ public class PointForceField extends ForceField {
     public Point2D force(Point2D location) {
         Point2D relative = location.subtract(source);
         double distance = relative.magnitude();
-        return relative.multiply((strength / (distance * distance * distance)));
+        if (distance > 0.01) {
+            return relative.multiply((strength / (distance * Math.max(distance * distance, 0.05))));
+        }
+        else return Point2D.ZERO;
     }
 }
