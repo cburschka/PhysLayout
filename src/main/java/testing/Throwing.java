@@ -33,16 +33,19 @@ public class Throwing extends Example {
         canvas.getChildren().add(line);
         canvas.getChildren().add(anchor);
         canvas.getChildren().add(ball);
+        layout.addNode(ball);
         layout.addConnection(ball, anchor, new Spring(0, 10));
         layout.setMass(anchor, Double.POSITIVE_INFINITY);
         MouseControlUtil.makeDraggable(ball);
         getSimulation().setFriction(0);
+        ball.setLayoutX(WIDTH / 2);
+        ball.setLayoutY(HEIGHT / 2);
     }
 
     @Override
     public void reset() {
-        ball.setLayoutX(WIDTH / 2);
-        ball.setLayoutY(HEIGHT / 2);
+        ball.setTranslateX(0);
+        ball.setTranslateY(0);
     }
 
     @Override
