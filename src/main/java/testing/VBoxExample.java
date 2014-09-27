@@ -2,8 +2,10 @@ package testing;
 
 import java.util.ArrayList;
 import java.util.List;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
@@ -50,11 +52,10 @@ public class VBoxExample extends Example {
 
         getSimulation().setFriction(2);
         ((PhysicalVBox) canvas).setStrength(20);
-
-        canvas.setLayoutX((WIDTH / 2));
-        canvas.setLayoutY((2 * HEIGHT / 3));
+        ((VBox) canvas).setAlignment(Pos.CENTER);
+        canvas.setLayoutX(WIDTH / 2);
+        canvas.setLayoutY(HEIGHT / 2);
         root.setCenter(canvas);
-
         canvas.toBack();
     }
 
@@ -105,10 +106,16 @@ public class VBoxExample extends Example {
 
     private void removeCircle() {
         int i = circles.size() - 1;
-        Node circle = circles.get(i);
-        Node line = lines.get(i - 1);
-        canvas.getChildren().removeAll(circle, line);
-        circles.remove(i);
-        lines.remove(i - 1);
+
+        if (i > 0) {
+            Node line = lines.get(i - 1);
+            canvas.getChildren().remove(line);
+            lines.remove(i - 1);
+        }
+        if (i >= 0) {
+            Node circle = circles.get(i);
+            canvas.getChildren().remove(circle);
+            circles.remove(i);
+        }
     }
 }
