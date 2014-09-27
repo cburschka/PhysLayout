@@ -1,5 +1,8 @@
 package testing;
 
+import java.util.ArrayList;
+import java.util.List;
+import javafx.scene.control.Button;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
@@ -14,61 +17,44 @@ import layout.panes.WheelPane;
  */
 public class WheelPaneExample extends Example {
 
-    public static final int NODE_COUNT = 20;
+    public static final int NODE_COUNT = 5;
     public static final int NODE_SIZE = 5;
 
-    private final Circle[] circles;
+    private final List<Circle> circles;
+    private final List<Line> spokeLines;
+    private final List<Line> rimLines;
+    private final Circle anchor;
 
     /**
      * Super-constructor for all examples.
      */
     public WheelPaneExample() {
+        Button add = new Button("Add node");
+        Button remove = new Button("Remove node");
+        menu.getItems().addAll(add, remove);
+        add.setOnAction(e -> {
+            addCircle();
+        });
+        remove.setOnAction(e -> {
+            removeCircle();
+        });
+
         canvas = new WheelPane();
         setSimulation(((WheelPane) canvas).simulation);
         ((WheelPane) canvas).setSpacing(10);
 
-        Circle anchor = new Circle(NODE_SIZE, Color.BLACK);
-        circles = new Circle[NODE_COUNT];
+        anchor = new Circle(NODE_SIZE, Color.BLACK);
+        circles = new ArrayList<>();
+        spokeLines = new ArrayList<>();
+        rimLines = new ArrayList<>();
         for (int i = 0; i < NODE_COUNT; i++) {
-            circles[i] = new Circle();
-            circles[i].setFill(Color.hsb(360.0 * i / NODE_COUNT, 1.0, 0.5));
-            circles[i].setRadius(NODE_SIZE * (1 + i * 7.0 / NODE_COUNT));
+            addCircle();
         }
-        canvas.getChildren().addAll(circles);
         ((WheelPane) canvas).setCenter(anchor);
 
-        //MouseControlUtil.makeDraggable(circles[1]);
-        for (int i = 0; i < NODE_COUNT; i++) {
-            Line line = new Line();
-            line.setFill(Color.BLACK);
-            line.setStroke(Color.BLACK);
-            line.startXProperty().bind(circles[i].layoutXProperty().add(circles[i].translateXProperty()));
-            line.startYProperty().bind(circles[i].layoutYProperty().add(circles[i].translateYProperty()));
-            line.endXProperty().bind(circles[(i + 1) % NODE_COUNT].layoutXProperty().add(circles[(i + 1) % NODE_COUNT].translateXProperty()));
-            line.endYProperty().bind(circles[(i + 1) % NODE_COUNT].layoutYProperty().add(circles[(i + 1) % NODE_COUNT].translateYProperty()));
-            canvas.getChildren().add(line);
-            line.setManaged(false);
-            line.toBack();
-
-            line = new Line();
-            line.setFill(Color.BLACK);
-            line.setStroke(Color.BLACK);
-            line.startXProperty().bind(circles[i].layoutXProperty().add(circles[i].translateXProperty()));
-            line.startYProperty().bind(circles[i].layoutYProperty().add(circles[i].translateYProperty()));
-            line.endXProperty().bind(anchor.layoutXProperty().add(anchor.translateXProperty()));
-            line.endYProperty().bind(anchor.layoutYProperty().add(anchor.translateYProperty()));
-            canvas.getChildren().add(line);
-            line.setManaged(false);
-            line.toBack();
-        }
-        for (Circle circle : circles) {
-            circle.setTranslateX((Math.random() - 0.5) * WIDTH);
-            circle.setTranslateY((Math.random() - 0.5) * HEIGHT);
-        }
         canvas.setLayoutX((WIDTH / 2));
         canvas.setLayoutY((HEIGHT / 2));
         root.setCenter(canvas);
-
         canvas.toBack();
     }
 
@@ -94,4 +80,60 @@ public class WheelPaneExample extends Example {
         return "Wheel Pane";
     }
 
+    private void addCircle() {
+        int i = circles.size();
+        Circle circle = new Circle(NODE_SIZE * (1 + Math.sqrt(i)));
+        circle.setFill(Color.hsb(360.0 * (i % NODE_COUNT) / NODE_COUNT, 1.0, 0.5));
+        circles.add(circle);
+
+        Line spokeLine = new Line();
+        spokeLine.setFill(Color.BLACK);
+        spokeLine.setStroke(Color.BLACK);
+        spokeLine.startXProperty().bind(circle.layoutXProperty().add(circle.translateXProperty()));
+        spokeLine.startYProperty().bind(circle.layoutYProperty().add(circle.translateYProperty()));
+        spokeLine.endXProperty().bind(anchor.layoutXProperty().add(anchor.translateXProperty()));
+        spokeLine.endYProperty().bind(anchor.layoutYProperty().add(anchor.translateYProperty()));
+        canvas.getChildren().addAll(circle, spokeLine);
+        spokeLine.setManaged(false);
+        spokeLine.toBack();
+        spokeLines.add(spokeLine);
+
+        if (circles.size() > 1) {
+            Line wheel1 = rimLines.get(i - 1);
+            wheel1.endXProperty().bind(circle.layoutXProperty().add(circle.translateXProperty()));
+            wheel1.endYProperty().bind(circle.layoutYProperty().add(circle.translateYProperty()));
+        }
+
+        Line wheel2 = new Line();
+        wheel2.setFill(Color.BLACK);
+        wheel2.setStroke(Color.BLACK);
+        wheel2.startXProperty().bind(circle.layoutXProperty().add(circle.translateXProperty()));
+        wheel2.startYProperty().bind(circle.layoutYProperty().add(circle.translateYProperty()));
+        wheel2.endXProperty().bind(circles.get(0).layoutXProperty().add(circles.get(0).translateXProperty()));
+        wheel2.endYProperty().bind(circles.get(0).layoutYProperty().add(circles.get(0).translateYProperty()));
+        wheel2.setManaged(false);
+        rimLines.add(wheel2);
+        canvas.getChildren().add(wheel2);
+        wheel2.toBack();
+    }
+
+    private void removeCircle() {
+        int i = circles.size() - 1;
+        if (i < 0) return;
+
+        // Remove circle and spoke:
+        canvas.getChildren().remove(circles.get(i));
+        circles.remove(i);
+        canvas.getChildren().remove(spokeLines.get(i));
+        spokeLines.remove(i);
+
+        // Remove the last rim segment, and reattach the previous one:
+        canvas.getChildren().remove(rimLines.get(i));
+        rimLines.remove(i);
+        if (i > 0) {
+            Line wheel1 = rimLines.get(i - 1);
+            wheel1.endXProperty().bind(circles.get(0).layoutXProperty().add(circles.get(0).translateXProperty()));
+            wheel1.endYProperty().bind(circles.get(0).layoutYProperty().add(circles.get(0).translateYProperty()));
+        }
+    }
 }
