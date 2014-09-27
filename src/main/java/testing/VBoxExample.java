@@ -1,5 +1,9 @@
 package testing;
 
+import java.util.ArrayList;
+import java.util.List;
+import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
@@ -14,7 +18,8 @@ import layout.panes.PhysicalVBox;
  */
 public class VBoxExample extends Example {
 
-    private final Circle[] circles;
+    private final List<Node> circles;
+    private final List<Node> lines;
     private final static int NODE_COUNT = 5;
     private final static int NODE_SIZE = 20;
 
@@ -23,34 +28,26 @@ public class VBoxExample extends Example {
      */
     public VBoxExample() {
         canvas = new PhysicalVBox(30);
+        Button add = new Button("Add node");
+        Button remove = new Button("Remove node");
+        menu.getItems().add(add);
+        menu.getItems().add(remove);
+        add.setOnAction(e -> {
+            addCircle();
+        });
+        remove.setOnAction(e -> {
+            removeCircle();
+        });
 
         setSimulation(((PhysicalVBox) canvas).simulation);
 
-        circles = new Circle[NODE_COUNT];
+        circles = new ArrayList<>();
+
+        lines = new ArrayList<>();
         for (int i = 0; i < NODE_COUNT; i++) {
-            circles[i] = new Circle();
-            circles[i].setFill(Color.hsb(360.0 * i / NODE_COUNT, 1.0, 0.5));
-            circles[i].setRadius(NODE_SIZE);
+            addCircle();
         }
-        canvas.getChildren().addAll(circles);
 
-        //MouseControlUtil.makeDraggable(circles[1]);
-        for (int i = 0; i < NODE_COUNT - 1; i++) {
-            Line line = new Line();
-            line.setFill(Color.BLACK);
-            line.setStroke(Color.BLACK);
-            line.startXProperty().bind(circles[i].layoutXProperty().add(circles[i].translateXProperty()));
-            line.startYProperty().bind(circles[i].layoutYProperty().add(circles[i].translateYProperty()));
-            line.endXProperty().bind(circles[(i + 1) % NODE_COUNT].layoutXProperty().add(circles[(i + 1) % NODE_COUNT].translateXProperty()));
-            line.endYProperty().bind(circles[(i + 1) % NODE_COUNT].layoutYProperty().add(circles[(i + 1) % NODE_COUNT].translateYProperty()));
-            canvas.getChildren().add(line);
-            line.setManaged(false);
-
-        }
-        for (Circle circle : circles) {
-            circle.setTranslateX((Math.random() - 0.5) * WIDTH);
-            circle.setTranslateY((Math.random() - 0.5) * HEIGHT);
-        }
         getSimulation().setFriction(2);
         ((PhysicalVBox) canvas).setStrength(20);
 
@@ -67,7 +64,7 @@ public class VBoxExample extends Example {
      */
     @Override
     public void reset() {
-        for (Circle circle : circles) {
+        for (Node circle : circles) {
             circle.setTranslateX((Math.random() - 0.5) * WIDTH);
             circle.setTranslateY((Math.random() - 0.5) * HEIGHT);
         }
@@ -81,5 +78,37 @@ public class VBoxExample extends Example {
     @Override
     public String getTitle() {
         return "VBox";
+    }
+
+    private void addCircle() {
+        int i = circles.size();
+        Circle circle = new Circle(NODE_SIZE);
+        circle.setFill(Color.hsb(360.0 * (i % NODE_COUNT) / NODE_COUNT, 1.0, 0.5));
+        circles.add(circle);
+        canvas.getChildren().add(circle);
+
+        if (i > 0) {
+            Line line = new Line();
+            line.setFill(Color.BLACK);
+            line.setStroke(Color.BLACK);
+            line.startXProperty().bind(circles.get(i - 1).layoutXProperty().add(circles.get(i - 1).translateXProperty()));
+            line.startYProperty().bind(circles.get(i - 1).layoutYProperty().add(circles.get(i - 1).translateYProperty()));
+            line.endXProperty().bind(circle.layoutXProperty().add(circle.translateXProperty()));
+            line.endYProperty().bind(circle.layoutYProperty().add(circle.translateYProperty()));
+            lines.add(line);
+            line.setManaged(false);
+
+            canvas.getChildren().add(line);
+            line.toBack();
+        }
+    }
+
+    private void removeCircle() {
+        int i = circles.size() - 1;
+        Node circle = circles.get(i);
+        Node line = lines.get(i - 1);
+        canvas.getChildren().removeAll(circle, line);
+        circles.remove(i);
+        lines.remove(i - 1);
     }
 }
