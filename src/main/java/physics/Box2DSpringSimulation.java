@@ -219,10 +219,18 @@ public class Box2DSpringSimulation {
         };
     }
 
+    public void destroy() {
+        stopSimulation();
+        animation = null;
+    }
+
     /**
      * Start simulating.
      */
     public void startSimulation() {
+        if (animation == null) {
+            return;
+        }
         updateModel();
         running.set(true);
         timeStamp = System.nanoTime();
@@ -234,7 +242,9 @@ public class Box2DSpringSimulation {
      */
     public void stopSimulation() {
         running.set(false);
-        animation.stop();
+        if (animation != null) {
+            animation.stop();
+        }
     }
 
     /**

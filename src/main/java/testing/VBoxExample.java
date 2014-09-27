@@ -5,10 +5,12 @@ import java.util.List;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import layout.panes.PhysicalHBox;
 import layout.panes.PhysicalPane;
 import layout.panes.PhysicalVBox;
 
@@ -25,24 +27,26 @@ public class VBoxExample extends Example {
     private final List<Node> lines;
     private final static int NODE_COUNT = 5;
     private final static int NODE_SIZE = 20;
+    private final static int SPACING = 30;
 
     /**
      * Super-constructor for all examples.
      */
     public VBoxExample() {
-        canvas = new PhysicalVBox(30);
+        canvas = new PhysicalHBox(SPACING);
         Button add = new Button("Add node");
         Button remove = new Button("Remove node");
-        menu.getItems().add(add);
-        menu.getItems().add(remove);
+        Button toggle = new Button("Horizontal");
+        menu.getItems().addAll(add, remove, toggle);
         add.setOnAction(e -> {
             addCircle();
         });
         remove.setOnAction(e -> {
             removeCircle();
         });
-
-        setSimulation(((PhysicalPane) canvas).getSimulation());
+        toggle.setOnAction(e -> {
+            toggle.setText(toggleVH() ? "Horizontal" : "Vertical");
+        });
 
         circles = new ArrayList<>();
 
@@ -51,13 +55,7 @@ public class VBoxExample extends Example {
             addCircle();
         }
 
-        getSimulation().setFriction(2);
-        ((PhysicalVBox) canvas).setStrength(20);
-        ((VBox) canvas).setAlignment(Pos.CENTER);
-        canvas.setLayoutX(WIDTH / 2);
-        canvas.setLayoutY(HEIGHT / 2);
-        root.setCenter(canvas);
-        canvas.toBack();
+        initializeCanvas();
     }
 
     /**
@@ -118,5 +116,38 @@ public class VBoxExample extends Example {
             canvas.getChildren().remove(circle);
             circles.remove(i);
         }
+    }
+
+    private boolean toggleVH() {
+        canvas.getChildren().clear();
+        getSimulation().destroy();
+        if (canvas instanceof PhysicalVBox) {
+            canvas = new PhysicalHBox(SPACING);
+        } else {
+            canvas = new PhysicalVBox(SPACING);
+        }
+        canvas.getChildren().addAll(circles);
+        canvas.getChildren().addAll(lines);
+        initializeCanvas();
+        return canvas instanceof PhysicalVBox;
+    }
+
+    private void initializeCanvas() {
+        System.err.println("TEST");
+        setSimulation(((PhysicalPane) canvas).getSimulation());
+        getSimulation().setFriction(2);
+        ((PhysicalPane) canvas).setStrength(20);
+
+        // VBox and HBox do not inherit setAlignment from a common supertype:
+        if (canvas instanceof VBox) {
+            ((VBox) canvas).setAlignment(Pos.CENTER);
+        } else {
+            ((HBox) canvas).setAlignment(Pos.CENTER);
+        }
+
+        canvas.setLayoutX(WIDTH / 2);
+        canvas.setLayoutY(HEIGHT / 2);
+        root.setCenter(canvas);
+        canvas.toBack();
     }
 }
