@@ -9,6 +9,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import layout.panes.PhysicalPane;
 import layout.panes.PhysicalVBox;
 
 /**
@@ -41,7 +42,7 @@ public class VBoxExample extends Example {
             removeCircle();
         });
 
-        setSimulation(((PhysicalVBox) canvas).simulation);
+        setSimulation(((PhysicalPane) canvas).getSimulation());
 
         circles = new ArrayList<>();
 

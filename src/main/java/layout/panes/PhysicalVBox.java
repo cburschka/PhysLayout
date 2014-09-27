@@ -13,11 +13,11 @@ import physics.Tether;
  *
  * @author Christoph Burschka &lt;christoph@burschka.de&gt;
  */
-public class PhysicalVBox extends VBox {
+public class PhysicalVBox extends VBox implements PhysicalPane {
 
     private final PhysLayout layout;
     private double strength = 50;
-    public final Box2DSpringSimulation simulation;
+    private final Box2DSpringSimulation simulation;
 
     public PhysicalVBox() {
         layout = new PhysLayout(this);
@@ -47,7 +47,7 @@ public class PhysicalVBox extends VBox {
     }
 
     private void initialize() {
-        setFriction(2);
+        simulation.setFriction(2);
     }
 
     @Override
@@ -91,20 +91,19 @@ public class PhysicalVBox extends VBox {
         simulation.startSimulation();
     }
 
-    public void startSimulation() {
-        simulation.startSimulation();
+    @Override
+    public Box2DSpringSimulation getSimulation() {
+        return simulation;
     }
 
-    public void stopSimulation() {
-        simulation.stopSimulation();
-    }
-
-    public void setFriction(double friction) {
-        simulation.setFriction(friction);
-    }
-
+    @Override
     public void setStrength(double strength) {
         this.strength = strength;
         this.requestLayout();
+    }
+
+    @Override
+    public double getStrength() {
+        return strength;
     }
 }
