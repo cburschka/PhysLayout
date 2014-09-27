@@ -10,6 +10,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import layout.ModifiedMouseControl;
 import layout.panes.PhysicalHBox;
 import layout.panes.PhysicalPane;
 import layout.panes.PhysicalVBox;
@@ -100,6 +101,7 @@ public class VBoxExample extends Example {
 
             canvas.getChildren().add(line);
             line.toBack();
+            ModifiedMouseControl.makeDraggable(circle);
         }
     }
 

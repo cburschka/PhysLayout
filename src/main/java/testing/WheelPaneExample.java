@@ -6,6 +6,7 @@ import javafx.scene.control.Button;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import layout.ModifiedMouseControl;
 import layout.panes.PhysicalPane;
 import layout.panes.WheelPane;
 
@@ -57,6 +58,7 @@ public class WheelPaneExample extends Example {
         canvas.setLayoutY((HEIGHT / 2));
         root.setCenter(canvas);
         canvas.toBack();
+        ModifiedMouseControl.makeDraggable(anchor);
     }
 
     /**
@@ -116,6 +118,7 @@ public class WheelPaneExample extends Example {
         rimLines.add(wheel2);
         canvas.getChildren().add(wheel2);
         wheel2.toBack();
+        ModifiedMouseControl.makeDraggable(circle);
     }
 
     private void removeCircle() {
