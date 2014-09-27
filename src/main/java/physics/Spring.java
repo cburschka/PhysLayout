@@ -60,7 +60,15 @@ public class Spring {
     public Point2D getForce(Point2D a, Point2D b) {
         Point2D relative = b.add(this.b).subtract(a.add(this.a));
         double distance = relative.magnitude();
-        return distance > 0 ? relative.multiply(getForce(distance) / distance) : Point2D.ZERO;
+        if (distance > 0) {
+            return relative.multiply(getForce(distance) / distance);
+        }
+        else {
+            // Apply force in a random direction:
+            double force = getForce(0);
+            double angle = Math.random() * 2 * Math.PI;
+            return new Point2D(Math.sin(angle) * force, Math.cos(angle)*force);
+        }
     }
 
     public Spring reverse() {
