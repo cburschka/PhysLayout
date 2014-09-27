@@ -41,6 +41,7 @@ public class WheelPane extends Pane {
         final Node c = center.get();
 
         layout.clearAllMasses();
+        layout.clearAllConnections();
         layout.setMass(c, Double.POSITIVE_INFINITY);
 
         final List<Node> managedChildren = getManagedChildren();
