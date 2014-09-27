@@ -6,6 +6,7 @@ import javafx.scene.control.Button;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import layout.panes.PhysicalPane;
 import layout.panes.WheelPane;
 
 /**
@@ -40,7 +41,7 @@ public class WheelPaneExample extends Example {
         });
 
         canvas = new WheelPane();
-        setSimulation(((WheelPane) canvas).simulation);
+        setSimulation(((PhysicalPane) canvas).getSimulation());
         ((WheelPane) canvas).setSpacing(10);
 
         anchor = new Circle(NODE_SIZE, Color.BLACK);

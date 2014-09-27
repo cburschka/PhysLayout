@@ -17,13 +17,13 @@ import physics.Spring;
  *
  * @author Christoph Burschka &lt;christoph@burschka.de&gt;
  */
-public class WheelPane extends Pane {
+public class WheelPane extends Pane implements PhysicalPane {
 
     public final ObjectProperty<Node> center;
     private final PhysLayout layout;
-    public final Box2DSpringSimulation simulation;
+    private final Box2DSpringSimulation simulation;
     private double radius;
-    private double strength = 10;
+    private double strength = 50;
     private double spacing = 0;
 
     public WheelPane() {
@@ -31,6 +31,7 @@ public class WheelPane extends Pane {
         layout = new PhysLayout(this);
         simulation = new Box2DSpringSimulation(layout);
         radius = Math.min(this.getWidth() * 0.5, this.getHeight() * 0.5);
+        simulation.setFriction(2);
     }
 
     @Override
@@ -112,6 +113,22 @@ public class WheelPane extends Pane {
         return center.get();
     }
 
+    @Override
+    public Box2DSpringSimulation getSimulation() {
+        return simulation;
+    }
+
+    @Override
+    public void setStrength(double strength) {
+        this.strength = strength;
+        requestLayout();
+    }
+
+    @Override
+    public double getStrength() {
+        return strength;
+    }
+
     /**
      * Inner class tracking the pane's central node (see
      * javafx.layout.scene.layout.BorderPane).
@@ -137,6 +154,7 @@ public class WheelPane extends Pane {
                 if (oldValue != null && !isBeingInvalidated) {
                     while (c.next()) {
                         if (c.wasRemoved() && c.getRemoved().contains(oldValue)) {
+
                             oldValue = null;
                             set(null);
                         }
