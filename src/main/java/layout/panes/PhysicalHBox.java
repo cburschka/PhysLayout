@@ -71,8 +71,8 @@ public class PhysicalHBox extends HBox {
         for (int i = 0; i < n; i++) {
             Node child = managedChildren.get(i);
             Point2D newPosition = new Point2D(child.getLayoutX(), child.getLayoutY());
-            child.setTranslateX(newPosition.getX() - positions[i].getX());
-            child.setTranslateY(newPosition.getY() - positions[i].getY());
+            child.setTranslateX(positions[i].getX() - newPosition.getX());
+            child.setTranslateY(positions[i].getY() - newPosition.getY());
             positions[i] = newPosition;
         }
 
