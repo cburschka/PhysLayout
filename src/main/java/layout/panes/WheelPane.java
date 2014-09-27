@@ -5,11 +5,13 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ObjectPropertyBase;
 import javafx.collections.ListChangeListener;
 import javafx.geometry.Bounds;
+import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import layout.PhysLayout;
 import physics.Box2DSpringSimulation;
 import physics.Spring;
+import physics.Tether;
 
 /**
  * Use one node as the center and orient the other nodes around it in clockwise
@@ -43,7 +45,9 @@ public class WheelPane extends Pane implements PhysicalPane {
 
         layout.clearAllMasses();
         layout.clearAllConnections();
-        layout.setMass(c, Double.POSITIVE_INFINITY);
+        if (c != null) {
+            layout.setMass(c, Double.POSITIVE_INFINITY);
+        }
 
         final List<Node> managedChildren = getManagedChildren();
 
@@ -99,7 +103,12 @@ public class WheelPane extends Pane implements PhysicalPane {
                 layout.addConnection(children[_i], children[(_i + j) % children.length], new Spring(chordLength, strength));
                 d += diags[(_i + j) % children.length] + spacing;
             }
-            layout.addConnection(c, children[_i], new Spring(r, strength));
+            if (c != null) {
+                layout.addConnection(c, children[_i], new Spring(r, strength));
+            } else {
+                // Without a center node, fix nodes to the center of the pane instead.
+                layout.addTether(children[_i], new Tether(r, strength, Point2D.ZERO));
+            }
         }
 
         simulation.startSimulation();
