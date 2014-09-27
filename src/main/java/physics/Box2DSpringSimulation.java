@@ -176,6 +176,7 @@ public class Box2DSpringSimulation {
             else if (node.isPressed()) {
                 body.setLinearVelocity(new Vec2());
             }
+            body.setActive(!node.isPressed());
         });
     }
 
